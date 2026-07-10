@@ -1,0 +1,29 @@
+# Python
+backend/.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+backend/.pytest_tmp/
+
+# Node
+frontend/node_modules/
+frontend/.next/
+
+# 訓練產物：模型權重需忽略，但 metadata.json 進版控（見 newssent/ml/registry.py）
+backend/artifacts/*.bin
+backend/artifacts/*.safetensors
+backend/artifacts/*.pt
+backend/artifacts/*.joblib
+backend/artifacts/*.pkl
+
+# 原始資料集（PhraseBank 原始檔）；切分索引可另外進版控
+backend/data/*.csv
+backend/data/*.txt
+backend/data/*.zip
+
+# 新聞快取
+backend/news_cache.db
+
+# 環境變數 — NewsAPI 金鑰只放 .env，絕不進版控
+.env
