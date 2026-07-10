@@ -1,0 +1,82 @@
+{
+  "model_name": "svm",
+  "trained_at": "2026-07-10T14:14:05+00:00",
+  "label_names": [
+    "negative",
+    "neutral",
+    "positive"
+  ],
+  "phrasebank_agreement": "50agree",
+  "split_seed": 42,
+  "split_ratios": [
+    0.7,
+    0.15,
+    0.15
+  ],
+  "git_commit": "2ddb96c",
+  "metrics": {
+    "val": {
+      "n_samples": 724,
+      "accuracy": 0.7831491712707183,
+      "macro_f1": 0.70793827609372,
+      "majority_class": "neutral",
+      "majority_baseline_accuracy": 0.5939226519337016,
+      "confusion_matrix": [
+        [
+          42,
+          37,
+          11
+        ],
+        [
+          9,
+          398,
+          23
+        ],
+        [
+          4,
+          73,
+          127
+        ]
+      ],
+      "label_distribution": {
+        "negative": 90,
+        "neutral": 430,
+        "positive": 204
+      },
+      "cpu_ms_per_sentence": 0.153
+    },
+    "test": {
+      "n_samples": 729,
+      "accuracy": 0.7983539094650206,
+      "macro_f1": 0.728625610644896,
+      "majority_class": "neutral",
+      "majority_baseline_accuracy": 0.5925925925925926,
+      "confusion_matrix": [
+        [
+          44,
+          35,
+          13
+        ],
+        [
+          5,
+          407,
+          20
+        ],
+        [
+          2,
+          72,
+          131
+        ]
+      ],
+      "label_distribution": {
+        "negative": 92,
+        "neutral": 432,
+        "positive": 205
+      },
+      "cpu_ms_per_sentence": 0.322
+    },
+    "train_seconds": 1.0
+  },
+  "n_train": 3385,
+  "n_duplicates_removed": 8
+}

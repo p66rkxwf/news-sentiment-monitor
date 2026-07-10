@@ -10,12 +10,13 @@ dependencies = [
     "httpx>=0.27",           # NewsAPI HTTP 呼叫
     "python-dotenv>=1.0",    # 讀取 .env 內的 NewsAPI 金鑰
     "slowapi>=0.1.9",        # 每 IP 限流，保護 NewsAPI 每日額度
+    "scikit-learn>=1.5",     # Phase 2 基線模型與關鍵字 TF-IDF
+    "joblib>=1.3",           # 模型 artifact 序列化
     # Windows 的 zoneinfo 不含 IANA 時區資料庫，需靠此套件補上
     "tzdata>=2024.1",
 ]
 
-# 以下相依較重，依 PLAN.md 分階段安裝，骨架階段不裝：
-#   Phase 2（基線）：scikit-learn
+# 以下相依較重，依 PLAN.md 分階段安裝，Phase 3 前不裝：
 #   Phase 3（transformer）：torch（CUDA wheel，依本機 CUDA 版本）、transformers、datasets
 # 見 README「分階段安裝」
 

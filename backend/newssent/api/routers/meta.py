@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 
 from newssent.api.schemas import HealthResponse, ModelInfoResponse
 
@@ -6,12 +6,20 @@ router = APIRouter(tags=["meta"])
 
 
 @router.get("/health", response_model=HealthResponse)
-def health() -> HealthResponse:
-    # Phase 5 起改為回報 registry 載入的真實模型狀態
-    return HealthResponse(status="ok", model_loaded=False)
+def health(request: Request) -> HealthResponse:
+    analyzer = getattr(request.app.state, "analyzer", None)
+    return HealthResponse(status="ok", model_loaded=analyzer is not None)
 
 
 @router.get("/api/model", response_model=ModelInfoResponse)
-def model_info() -> ModelInfoResponse:
-    # Phase 4 模型選定後，改由 newssent/ml/registry.py 讀取真實 metadata.json
-    return ModelInfoResponse(model_version="mock-0.0.0", is_mock=True)
+def model_info(request: Request) -> ModelInfoResponse:
+    analyzer = getattr(request.app.state, "analyzer", None)
+    if analyzer is None:
+        return ModelInfoResponse(model_version="mock-0.0.0", is_mock=True)
+    meta = analyzer.metadata
+    return ModelInfoResponse(
+        model_version=analyzer.version,
+        trained_at=meta.get("trained_at"),
+        test_macro_f1=meta.get("metrics", {}).get("test", {}).get("macro_f1"),
+        is_mock=False,
+    )

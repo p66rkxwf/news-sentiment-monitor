@@ -29,6 +29,11 @@ SPLIT_SEED = 42
 SPLIT_RATIOS: tuple[float, float, float] = (0.70, 0.15, 0.15)  # train/val/test
 MAX_LENGTH = 128                        # Phase 1 依句長分佈最終確認
 
+# --- 模型（Phase 4 選型後更新；目前為 Phase 2 基線中的較佳者）---
+# 2026-07-10 比較：tfidf_lr 驗證 Macro F1 0.7121 > svm 0.7079，且 CPU 推論快 5 倍
+# （測試集兩者相當，見 docs/model_comparison.md）；Phase 3 transformer 完成後重新選型
+PRODUCTION_MODEL = "tfidf_lr"           # artifacts/<名稱>/，由 compare.py 結果決定
+
 # --- 情緒指數（Phase 5 aggregate.py）---
 # score = Σ(sign × confidence) / n，映射 [−1, +1]；|score| 超過門檻才判為正/負，否則中性
 SENTIMENT_LABEL_THRESHOLD = 0.15

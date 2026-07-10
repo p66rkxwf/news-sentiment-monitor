@@ -46,3 +46,37 @@ def test_sentiment_mock_shape(client):
     assert body["label"] in ("negative", "neutral", "positive")
     assert -1 <= body["score"] <= 1
     assert body["is_mock"] is True
+
+
+def test_sentiment_with_loaded_model(client_with_model):
+    r = client_with_model.get("/api/stocks/AAPL/sentiment")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["is_mock"] is False
+    assert body["model_version"] == "fake-1.0"
+    assert body["label"] == "positive"  # FakeAnalyzer 全判 positive、信心 0.9
+    assert body["article_count"] == 2
+    assert body["keywords"] == [{"word": "earnings", "score": 1.0}]
+
+
+def test_news_with_loaded_model(client_with_model):
+    r = client_with_model.get("/api/stocks/AAPL/news")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["is_mock"] is False
+    assert all(a["sentiment"] == "positive" for a in body["articles"])
+    assert all(a["confidence"] == 0.9 for a in body["articles"])
+
+
+def test_model_info_with_loaded_model(client_with_model):
+    r = client_with_model.get("/api/model")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["is_mock"] is False
+    assert body["test_macro_f1"] == 0.72
+
+
+def test_health_reports_model_loaded(client_with_model):
+    r = client_with_model.get("/health")
+    assert r.status_code == 200
+    assert r.json()["model_loaded"] is True
