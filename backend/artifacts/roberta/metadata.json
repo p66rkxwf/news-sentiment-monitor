@@ -1,0 +1,92 @@
+{
+  "model_name": "roberta",
+  "trained_at": "2026-07-11T07:38:34+00:00",
+  "label_names": [
+    "negative",
+    "neutral",
+    "positive"
+  ],
+  "phrasebank_agreement": "50agree",
+  "split_seed": 42,
+  "split_ratios": [
+    0.7,
+    0.15,
+    0.15
+  ],
+  "git_commit": "7e32d7d",
+  "metrics": {
+    "val": {
+      "n_samples": 724,
+      "accuracy": 0.8646408839779005,
+      "macro_f1": 0.845134316823608,
+      "majority_class": "neutral",
+      "majority_baseline_accuracy": 0.5939226519337016,
+      "confusion_matrix": [
+        [
+          85,
+          2,
+          3
+        ],
+        [
+          35,
+          366,
+          29
+        ],
+        [
+          4,
+          25,
+          175
+        ]
+      ],
+      "label_distribution": {
+        "negative": 90,
+        "neutral": 430,
+        "positive": 204
+      },
+      "cpu_ms_per_sentence": 14.739,
+      "gpu_ms_per_sentence": 0.284
+    },
+    "test": {
+      "n_samples": 729,
+      "accuracy": 0.8614540466392319,
+      "macro_f1": 0.8455124941943112,
+      "majority_class": "neutral",
+      "majority_baseline_accuracy": 0.5925925925925926,
+      "confusion_matrix": [
+        [
+          83,
+          6,
+          3
+        ],
+        [
+          22,
+          377,
+          33
+        ],
+        [
+          4,
+          33,
+          168
+        ]
+      ],
+      "label_distribution": {
+        "negative": 92,
+        "neutral": 432,
+        "positive": 205
+      },
+      "cpu_ms_per_sentence": 15.301,
+      "gpu_ms_per_sentence": 0.84
+    },
+    "train_seconds": 30.8
+  },
+  "n_train": 3385,
+  "n_duplicates_removed": 8,
+  "hyperparams": {
+    "pretrained": "roberta-base",
+    "max_length": 128,
+    "lr": 2e-05,
+    "epochs": 8,
+    "batch_size": 32,
+    "warmup_ratio": 0.1
+  }
+}

@@ -40,7 +40,13 @@ class TfidfLogRegModel(SentimentModel):
             ]
         )
 
-    def fit(self, texts: list[str], labels: list[int]) -> "TfidfLogRegModel":
+    def fit(
+        self,
+        texts: list[str],
+        labels: list[int],
+        val_texts: list[str] | None = None,
+        val_labels: list[int] | None = None,
+    ) -> "TfidfLogRegModel":
         self._pipe.fit(texts, labels)
         return self
 
@@ -60,7 +66,13 @@ class TfidfSvmModel(SentimentModel):
             ]
         )
 
-    def fit(self, texts: list[str], labels: list[int]) -> "TfidfSvmModel":
+    def fit(
+        self,
+        texts: list[str],
+        labels: list[int],
+        val_texts: list[str] | None = None,
+        val_labels: list[int] | None = None,
+    ) -> "TfidfSvmModel":
         self._pipe.fit(texts, labels)
         return self
 

@@ -24,7 +24,14 @@ class SentimentModel(abc.ABC):
     name: str = "base"
 
     @abc.abstractmethod
-    def fit(self, texts: list[str], labels: list[int]) -> "SentimentModel":
+    def fit(
+        self,
+        texts: list[str],
+        labels: list[int],
+        val_texts: list[str] | None = None,
+        val_labels: list[int] | None = None,
+    ) -> "SentimentModel":
+        """val_texts/val_labels 供需要 early stopping 的模型（transformer）使用，基線忽略。"""
         raise NotImplementedError
 
     @abc.abstractmethod

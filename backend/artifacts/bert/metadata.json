@@ -1,0 +1,142 @@
+{
+  "model_name": "bert",
+  "trained_at": "2026-07-11T08:08:20+00:00",
+  "label_names": [
+    "negative",
+    "neutral",
+    "positive"
+  ],
+  "phrasebank_agreement": "50agree",
+  "split_seed": 42,
+  "split_ratios": [
+    0.7,
+    0.15,
+    0.15
+  ],
+  "git_commit": "7e32d7d",
+  "metrics": {
+    "val": {
+      "n_samples": 724,
+      "accuracy": 0.8687845303867403,
+      "macro_f1": 0.8542235471159346,
+      "majority_class": "neutral",
+      "majority_baseline_accuracy": 0.5939226519337016,
+      "confusion_matrix": [
+        [
+          80,
+          8,
+          2
+        ],
+        [
+          16,
+          376,
+          38
+        ],
+        [
+          5,
+          26,
+          173
+        ]
+      ],
+      "label_distribution": {
+        "negative": 90,
+        "neutral": 430,
+        "positive": 204
+      },
+      "cpu_ms_per_sentence": 14.223,
+      "gpu_ms_per_sentence": 1.086
+    },
+    "test": {
+      "n_samples": 729,
+      "accuracy": 0.8600823045267489,
+      "macro_f1": 0.8457962084341513,
+      "majority_class": "neutral",
+      "majority_baseline_accuracy": 0.5925925925925926,
+      "confusion_matrix": [
+        [
+          79,
+          11,
+          2
+        ],
+        [
+          14,
+          380,
+          38
+        ],
+        [
+          4,
+          33,
+          168
+        ]
+      ],
+      "label_distribution": {
+        "negative": 92,
+        "neutral": 432,
+        "positive": 205
+      },
+      "cpu_ms_per_sentence": 13.853,
+      "gpu_ms_per_sentence": 0.372
+    },
+    "train_seconds": 52.8
+  },
+  "n_train": 3385,
+  "n_duplicates_removed": 8,
+  "hyperparams": {
+    "pretrained": "bert-base-uncased",
+    "max_length": 64,
+    "lr": 2e-05,
+    "epochs": 8,
+    "batch_size": 32,
+    "warmup_ratio": 0.1
+  },
+  "tuned": true,
+  "tuning_grid": {
+    "lr": [
+      1e-05,
+      2e-05,
+      3e-05
+    ],
+    "max_length": [
+      64,
+      128
+    ]
+  },
+  "tuning_results": [
+    {
+      "lr": 1e-05,
+      "max_length": 64,
+      "val_macro_f1": 0.8422705865566779,
+      "seconds": 60.5
+    },
+    {
+      "lr": 1e-05,
+      "max_length": 128,
+      "val_macro_f1": 0.8518541129938856,
+      "seconds": 69.2
+    },
+    {
+      "lr": 2e-05,
+      "max_length": 64,
+      "val_macro_f1": 0.8542235471159346,
+      "seconds": 52.8
+    },
+    {
+      "lr": 2e-05,
+      "max_length": 128,
+      "val_macro_f1": 0.8464428816367588,
+      "seconds": 69.3
+    },
+    {
+      "lr": 3e-05,
+      "max_length": 64,
+      "val_macro_f1": 0.8536629111514665,
+      "seconds": 52.6
+    },
+    {
+      "lr": 3e-05,
+      "max_length": 128,
+      "val_macro_f1": 0.8516799736672057,
+      "seconds": 56.6
+    }
+  ]
+}

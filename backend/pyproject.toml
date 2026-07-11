@@ -14,11 +14,14 @@ dependencies = [
     "joblib>=1.3",           # 模型 artifact 序列化
     # Windows 的 zoneinfo 不含 IANA 時區資料庫，需靠此套件補上
     "tzdata>=2024.1",
+    # 新聞備援/主源（免金鑰）：YFinanceNewsProvider
+    "yfinance>=0.2.60",
+    # Phase 3 transformer 重相依。NVIDIA GPU 訓練請先以 cu128 index 安裝 torch：
+    #   pip install torch --index-url https://download.pytorch.org/whl/cu128
+    "torch>=2.7",
+    "transformers>=4.44",
+    "accelerate>=1.0",
 ]
-
-# 以下相依較重，依 PLAN.md 分階段安裝，Phase 3 前不裝：
-#   Phase 3（transformer）：torch（CUDA wheel，依本機 CUDA 版本）、transformers、datasets
-# 見 README「分階段安裝」
 
 [project.optional-dependencies]
 dev = [

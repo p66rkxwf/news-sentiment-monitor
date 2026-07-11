@@ -2,9 +2,12 @@
 
 三分類（negative / neutral / positive），去重後分層切分（全隊共用同一份切分索引），主指標 Macro F1（neutral 過半，Accuracy 會被灌水）。
 
-| 模型 | 驗證 Macro F1 | 測試 Macro F1 | 測試 Accuracy | 多數類基線 Acc | CPU ms/句 | GPU ms/句 | 訓練日 |
-|---|---|---|---|---|---|---|---|
-| svm | 0.7079 | 0.7286 | 0.7984 | 0.5926 | 0.322 | — | 2026-07-10 |
-| tfidf_lr | 0.7121 | 0.7240 | 0.7805 | 0.5926 | 0.067 | — | 2026-07-10 |
+| 模型 | 驗證 Macro F1 | 測試 Macro F1 | 測試 Accuracy | 多數類基線 Acc | CPU ms/句 | GPU ms/句 | 模型大小 MB | 訓練日 |
+|---|---|---|---|---|---|---|---|---|
+| bert | 0.8542 | 0.8458 | 0.8601 | 0.5926 | 13.853 | 0.372 | 438.9 | 2026-07-11 |
+| distilbert | 0.8395 | 0.8129 | 0.8354 | 0.5926 | 7.431 | 0.885 | 268.7 | 2026-07-11 |
+| roberta | 0.8451 | 0.8455 | 0.8615 | 0.5926 | 15.301 | 0.84 | 501.7 | 2026-07-11 |
+| svm | 0.7079 | 0.7286 | 0.7984 | 0.5926 | 0.322 | — | 1.6 | 2026-07-10 |
+| tfidf_lr | 0.7121 | 0.7240 | 0.7805 | 0.5926 | 0.067 | — | 0.5 | 2026-07-10 |
 
-> 由 `python -m newssent.ml.compare` 自動產生，數據來源為 `backend/artifacts/*/metadata.json`。GPU 欄位待 Phase 3 transformer 加入。
+> 由 `python -m newssent.ml.compare` 自動產生，數據來源為 `backend/artifacts/*/metadata.json`。GPU 欄位僅 transformer 模型（基線為純 CPU）；速度為單句平均（批次 200 句）。

@@ -1,0 +1,31 @@
+﻿ticker,published_at,title,model_label,confidence,human_label
+AAPL,2026-07-10,Apple is suing OpenAI over alleged trade secret theft,negative,0.994,negative
+AAPL,2026-07-10,How SK Hynix picked the 'perfect time' to list in the US,neutral,0.992,positive
+AAPL,2026-07-10,What to expect this earnings season amid lingering Hindenburg Omens,neutral,0.993,negative
+AAPL,2026-07-11,"The 2 Magnificent Seven Stocks With the Most Upside Potential, According to Wall Street",neutral,0.927,positive
+AAPL,2026-07-11,Apple sues OpenAI alleging trade secret theft,negative,0.92,negative
+AAPL,2026-07-11,Has Meta ever had a stock split? What sets this ‘Mag 7’ stock apart,neutral,0.994,neutral
+TSLA,2026-07-11,SK Hynix ETFs Are Coming. Exactly Who Should Own Them.,neutral,0.997,neutral
+TSLA,2026-07-11,"If You Have $1,000 to Invest in EV Stocks, Should It Go to Tesla or Rivian?",neutral,0.997,neutral
+TSLA,2026-07-11,Tesla Reportedly Pushes Staff Toward Grok 4.5 As AI Spending Cap Takes Effect,positive,0.92,neutral
+TSLA,2026-07-10,Review & Preview: Why the Dow Snapped Its Streak,neutral,0.994,negative
+TSLA,2026-07-10,"Waymo, Tesla must fix a dangerous issue with their robotaxis, NHTSA says",neutral,0.99,negative
+TSLA,2026-07-10,Tesla Tears Down Model S/X Line In Just 46 Days For Optimus Production,neutral,0.931,neutral
+NVDA,2026-07-10,"Stock market today: Dow, S&P 500, Nasdaq rise to cap choppy week as SK Hynix pops in US debut",neutral,0.98,positive
+NVDA,2026-07-10,Chip stocks regain some ground after whipsaw of a trading week,neutral,0.875,positive
+NVDA,2026-07-10,Why you should care about SK Hynix's IPO,neutral,0.995,neutral
+NVDA,2026-07-11,Shares of Intel and AMD Have Plummeted in the Last Few Days. Is It Time to Panic?,negative,0.982,negative
+NVDA,2026-07-11,This Overlooked Investment Could Set You Up for Life. Here's How.,neutral,0.996,positive
+NVDA,2026-07-11,Micron CEO Sanjay Mehrotra Announces $250 Billion Investment for Expanded Artificial Intelligence (AI) Memory Chip Development,positive,0.997,positive
+MSFT,2026-07-10,PC shipments fall as AI demand spikes memory prices,negative,0.988,negative
+MSFT,2026-07-11,Advanced Micro Devices vs. Texas Instruments: Which Technology Stock Is a Better Buy in 2026?,neutral,0.996,neutral
+MSFT,2026-07-11,Arista Networks (ANET) Could Be 2% Undervalued Following Its AI Switching Push,negative,0.998,neutral
+MSFT,2026-07-11,Why tech investors are reevaluating AI investments,neutral,0.994,neutral
+MSFT,2026-07-10,"I’d Put $25,000 in These 2 ETFs Before the Next Earnings Season",neutral,0.995,positive
+MSFT,2026-07-10,"Amazon, Microsoft and Meta Among HSBC Earnings Picks",neutral,0.977,positive
+GOOG,2026-07-10,What Meta's Muse AI image tool means for Instagram privacy,neutral,0.997,neutral
+GOOG,2026-07-10,Why Microsoft is not this portfolio manager's stock pick,neutral,0.996,negative
+GOOG,2026-07-10,You Didn’t Need Alphabet: XLK Returned 29.35% to GOOGL’s 14.26%,neutral,0.997,negative
+GOOG,2026-07-10,UK Brings Amazon Web Services Under Direct Financial Oversight,neutral,0.998,negative
+GOOG,2026-07-10,IBM's Quantum Upside Meets Valuation Risk,neutral,0.959,neutral
+GOOG,2026-07-10,AI Giants Add $350 Billion Debt as $725 Billion Spending Surges,neutral,0.902,negative

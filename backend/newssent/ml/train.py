@@ -1,8 +1,8 @@
-"""統一訓練入口：python -m newssent.ml.train --model tfidf_lr|svm
+"""統一訓練入口：python -m newssent.ml.train --model tfidf_lr|svm|distilbert|bert|roberta
 
 資料經 phrasebank.prepare()（自動下載、清洗、去重、固定切分），
 訓練後評估 val/test 並以 registry.save() 存 artifact + metadata。
-transformer 模型（Phase 3）之後加入 MODEL_FACTORIES 即可用同一入口。
+transformer 模型延遲 import torch/transformers：無重相依的環境仍可訓練基線。
 """
 
 from __future__ import annotations
@@ -16,10 +16,22 @@ from newssent.ml import registry
 from newssent.ml.evaluate import evaluate
 from newssent.ml.models.baselines import MODEL_FACTORIES
 
+TRANSFORMER_MODEL_NAMES = ("distilbert", "bert", "roberta")
+ALL_MODEL_NAMES = sorted([*MODEL_FACTORIES, *TRANSFORMER_MODEL_NAMES])
+
+
+def create_model(name: str, **hyperparams):
+    """建立模型實例；transformer 延遲 import 重相依。"""
+    if name in TRANSFORMER_MODEL_NAMES:
+        from newssent.ml.models.transformer import MODEL_FACTORIES as TRANSFORMER_FACTORIES
+
+        return TRANSFORMER_FACTORIES[name](**hyperparams)
+    return MODEL_FACTORIES[name]()
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="訓練情緒分類模型")
-    parser.add_argument("--model", required=True, choices=sorted(MODEL_FACTORIES))
+    parser.add_argument("--model", required=True, choices=ALL_MODEL_NAMES)
     args = parser.parse_args()
 
     pb = phrasebank.prepare()
@@ -28,10 +40,10 @@ def main() -> None:
     test_x, test_y = phrasebank.subset(pb, pb.split.test)
     print(f"train/val/test = {len(train_y)}/{len(val_y)}/{len(test_y)}")
 
-    model = MODEL_FACTORIES[args.model]()
+    model = create_model(args.model)
     print(f"訓練 {args.model}…")
     t0 = time.perf_counter()
-    model.fit(train_x, train_y)
+    model.fit(train_x, train_y, val_texts=val_x, val_labels=val_y)
     train_seconds = round(time.perf_counter() - t0, 1)
     print(f"訓練完成，耗時 {train_seconds}s")
 
@@ -42,12 +54,10 @@ def main() -> None:
     }
     print(json.dumps(metrics, ensure_ascii=False, indent=2))
 
-    out_dir = registry.save(
-        args.model,
-        model,
-        metrics,
-        extra={"n_train": len(train_y), "n_duplicates_removed": pb.n_duplicates},
-    )
+    extra = {"n_train": len(train_y), "n_duplicates_removed": pb.n_duplicates}
+    if hasattr(model, "hyperparams"):
+        extra["hyperparams"] = model.hyperparams()
+    out_dir = registry.save(args.model, model, metrics, extra=extra)
     print(f"artifact 已存入 {out_dir}")
 
 

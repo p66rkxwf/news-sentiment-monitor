@@ -15,11 +15,12 @@ from newssent.config import (
     ALLOWED_ORIGINS,
     NEWS_CACHE_BUCKET_SECONDS,
     NEWS_CACHE_DB_PATH,
+    NEWS_PROVIDER,
     NEWSAPI_KEY,
     PRODUCTION_MODEL,
 )
 from newssent.data.cache import NewsCache
-from newssent.data.provider import NewsAPIProvider
+from newssent.data.provider import NewsAPIProvider, YFinanceNewsProvider
 from newssent.inference.analyzer import Analyzer
 from newssent.ml.registry import ArtifactContractError
 
@@ -33,11 +34,16 @@ limiter = Limiter(key_func=get_remote_address, default_limits=["30/minute"])
 async def lifespan(app: FastAPI):
     cache = NewsCache(NEWS_CACHE_DB_PATH)
     app.state.news_cache = cache
-    app.state.news_provider = NewsAPIProvider(
-        cache=cache,
-        api_key=NEWSAPI_KEY,
-        bucket_seconds=NEWS_CACHE_BUCKET_SECONDS,
-    )
+    # 新聞源由 config.NEWS_PROVIDER 決定（yfinance 免金鑰 / newsapi 需 NEWSAPI_KEY）
+    if NEWS_PROVIDER == "yfinance":
+        app.state.news_provider = YFinanceNewsProvider(
+            cache=cache, bucket_seconds=NEWS_CACHE_BUCKET_SECONDS
+        )
+    else:
+        app.state.news_provider = NewsAPIProvider(
+            cache=cache, api_key=NEWSAPI_KEY, bucket_seconds=NEWS_CACHE_BUCKET_SECONDS
+        )
+    logger.info("新聞來源：%s", NEWS_PROVIDER)
 
     try:
         app.state.analyzer = Analyzer.from_registry(PRODUCTION_MODEL)

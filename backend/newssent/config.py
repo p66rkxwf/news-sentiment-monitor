@@ -6,11 +6,41 @@
 """
 
 import os
+import shutil
+import tempfile
 from pathlib import Path
 
 from dotenv import load_dotenv
 
 load_dotenv()  # 讀取 backend/.env（若存在）
+
+
+def _fix_curl_ca_bundle() -> None:
+    """專案路徑含非 ASCII 字元（如「百萬專題」）時，libcurl 讀不到 venv 內
+    certifi 的 CA 檔（curl error 77），yfinance/curl_cffi 的所有 HTTPS 都會失敗。
+    對策：把 cacert.pem 複製到 ASCII 路徑並以 CURL_CA_BUNDLE 指定（已設定者不動）。
+    """
+    if os.environ.get("CURL_CA_BUNDLE"):
+        return
+    try:
+        import certifi
+
+        src = certifi.where()
+        if src.isascii():
+            return  # 路徑本來就沒問題
+        base = os.environ.get("LOCALAPPDATA") or tempfile.gettempdir()
+        if not base.isascii():
+            return  # 找不到 ASCII 落腳處，維持原行為（快取降級仍可運作）
+        target = Path(base) / "newssent" / "cacert.pem"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if not target.exists() or target.stat().st_size != Path(src).stat().st_size:
+            shutil.copyfile(src, target)
+        os.environ["CURL_CA_BUNDLE"] = str(target)
+    except Exception:
+        pass  # 盡力而為，不因此擋住啟動
+
+
+_fix_curl_ca_bundle()
 
 BACKEND_ROOT = Path(__file__).resolve().parent.parent
 ARTIFACTS_DIR = BACKEND_ROOT / "artifacts"
@@ -29,17 +59,20 @@ SPLIT_SEED = 42
 SPLIT_RATIOS: tuple[float, float, float] = (0.70, 0.15, 0.15)  # train/val/test
 MAX_LENGTH = 128                        # Phase 1 依句長分佈最終確認
 
-# --- 模型（Phase 4 選型後更新；目前為 Phase 2 基線中的較佳者）---
-# 2026-07-10 比較：tfidf_lr 驗證 Macro F1 0.7121 > svm 0.7079，且 CPU 推論快 5 倍
-# （測試集兩者相當，見 docs/model_comparison.md）；Phase 3 transformer 完成後重新選型
-PRODUCTION_MODEL = "tfidf_lr"           # artifacts/<名稱>/，由 compare.py 結果決定
+# --- 模型（Phase 4 選型）---
+# 2026-07-11 五模型比較（驗證集 Macro F1 選型，避免用測試集挑模型的樂觀偏差）：
+#   bert(調參後 lr=2e-5, max_length=64) 0.8542 > distilbert 0.8395 > roberta 0.8451
+#   > tfidf_lr 0.7121 > svm 0.7079；測試集確認 bert 0.8458 仍居首
+# 選型理由詳見 docs/model_selection.md（F1 提升幅度 vs 推論成本）
+PRODUCTION_MODEL = "bert"               # artifacts/<名稱>/，由 compare.py 結果決定
 
 # --- 情緒指數（Phase 5 aggregate.py）---
 # score = Σ(sign × confidence) / n，映射 [−1, +1]；|score| 超過門檻才判為正/負，否則中性
 SENTIMENT_LABEL_THRESHOLD = 0.15
 
 # --- 新聞來源與快取（Phase 5）---
-NEWS_PROVIDER = "newsapi"               # 主源；備援 yfinance 可於此切換
+# yfinance：免金鑰、近即時（目前主源）；newsapi：申請表指定源，取得 NEWSAPI_KEY 後切回
+NEWS_PROVIDER = "yfinance"
 NEWSAPI_KEY = os.environ.get("NEWSAPI_KEY", "")
 NEWS_CACHE_BUCKET_SECONDS = 3600        # 時間桶：同 ticker 一小時內只打一次外部 API
 NEWS_DEFAULT_LIMIT = 20

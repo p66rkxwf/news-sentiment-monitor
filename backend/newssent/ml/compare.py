@@ -20,6 +20,9 @@ def build_table(artifacts_dir: Path = ARTIFACTS_DIR) -> str:
         meta = json.loads(meta_path.read_text(encoding="utf-8"))
         test = meta.get("metrics", {}).get("test", {})
         val = meta.get("metrics", {}).get("val", {})
+        model_file = meta_path.parent / "model.joblib"
+        size_mb = round(model_file.stat().st_size / 1e6, 1) if model_file.exists() else None
+        gpu_ms = test.get("gpu_ms_per_sentence")
         rows.append(
             {
                 "模型": meta["model_name"],
@@ -28,7 +31,8 @@ def build_table(artifacts_dir: Path = ARTIFACTS_DIR) -> str:
                 "測試 Accuracy": _fmt(test.get("accuracy")),
                 "多數類基線 Acc": _fmt(test.get("majority_baseline_accuracy")),
                 "CPU ms/句": test.get("cpu_ms_per_sentence", "—"),
-                "GPU ms/句": test.get("gpu_ms_per_sentence", "—"),
+                "GPU ms/句": gpu_ms if gpu_ms is not None else "—",
+                "模型大小 MB": size_mb if size_mb is not None else "—",
                 "訓練日": meta.get("trained_at", "")[:10],
             }
         )
@@ -57,7 +61,8 @@ def main() -> None:
         "主指標 Macro F1（neutral 過半，Accuracy 會被灌水）。\n\n"
         f"{table}\n"
         "> 由 `python -m newssent.ml.compare` 自動產生，數據來源為 "
-        "`backend/artifacts/*/metadata.json`。GPU 欄位待 Phase 3 transformer 加入。\n"
+        "`backend/artifacts/*/metadata.json`。GPU 欄位僅 transformer 模型（基線為純 CPU）；"
+        "速度為單句平均（批次 200 句）。\n"
     )
     DOCS_DIR.mkdir(parents=True, exist_ok=True)
     out = DOCS_DIR / "model_comparison.md"

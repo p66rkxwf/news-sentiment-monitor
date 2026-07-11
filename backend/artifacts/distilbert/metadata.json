@@ -1,0 +1,92 @@
+{
+  "model_name": "distilbert",
+  "trained_at": "2026-07-11T07:36:13+00:00",
+  "label_names": [
+    "negative",
+    "neutral",
+    "positive"
+  ],
+  "phrasebank_agreement": "50agree",
+  "split_seed": 42,
+  "split_ratios": [
+    0.7,
+    0.15,
+    0.15
+  ],
+  "git_commit": "7e32d7d",
+  "metrics": {
+    "val": {
+      "n_samples": 724,
+      "accuracy": 0.8604972375690608,
+      "macro_f1": 0.8395348894333806,
+      "majority_class": "neutral",
+      "majority_baseline_accuracy": 0.5939226519337016,
+      "confusion_matrix": [
+        [
+          75,
+          10,
+          5
+        ],
+        [
+          17,
+          379,
+          34
+        ],
+        [
+          4,
+          31,
+          169
+        ]
+      ],
+      "label_distribution": {
+        "negative": 90,
+        "neutral": 430,
+        "positive": 204
+      },
+      "cpu_ms_per_sentence": 7.086,
+      "gpu_ms_per_sentence": 0.202
+    },
+    "test": {
+      "n_samples": 729,
+      "accuracy": 0.8353909465020576,
+      "macro_f1": 0.8129420628854387,
+      "majority_class": "neutral",
+      "majority_baseline_accuracy": 0.5925925925925926,
+      "confusion_matrix": [
+        [
+          74,
+          14,
+          4
+        ],
+        [
+          15,
+          371,
+          46
+        ],
+        [
+          8,
+          33,
+          164
+        ]
+      ],
+      "label_distribution": {
+        "negative": 92,
+        "neutral": 432,
+        "positive": 205
+      },
+      "cpu_ms_per_sentence": 7.431,
+      "gpu_ms_per_sentence": 0.885
+    },
+    "train_seconds": 17.9
+  },
+  "n_train": 3385,
+  "n_duplicates_removed": 8,
+  "hyperparams": {
+    "pretrained": "distilbert-base-uncased",
+    "max_length": 128,
+    "lr": 2e-05,
+    "epochs": 8,
+    "batch_size": 32,
+    "warmup_ratio": 0.1
+  }
+}
