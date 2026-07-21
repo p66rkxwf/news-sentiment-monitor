@@ -1,26 +1,106 @@
 @import "tailwindcss";
 
+/* ── 設計 token：介面語言的單一事實來源 ───────────────────────────
+   sentiment 三色沿用美股慣例（正面綠／負面紅／中性灰），為狀態型配色，
+   每處均搭配文字標籤，不以顏色單獨承載語意。 */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --background: #f7f8fa;
+  --surface: #ffffff;
+  --surface-2: #f1f3f6;
+  --border: #e3e7ed;
+  --ink: #101725;
+  --ink-2: #475069;
+  --ink-3: #8b93a4;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --accent: #4f46e5;
+  --accent-fg: #ffffff;
+  --accent-soft: #eef0fe;
+
+  --pos: #15803d;
+  --pos-soft: #e7f6ec;
+  --neu: #64748b;
+  --neu-soft: #eef1f5;
+  --neg: #dc2626;
+  --neg-soft: #fdeaea;
+
+  --shadow-sm: 0 1px 2px rgba(16, 23, 37, 0.06), 0 1px 3px rgba(16, 23, 37, 0.04);
+  --shadow-md: 0 4px 12px rgba(16, 23, 37, 0.08), 0 2px 4px rgba(16, 23, 37, 0.04);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0a0d14;
+    --surface: #131824;
+    --surface-2: #1b2130;
+    --border: #262d3d;
+    --ink: #eef1f6;
+    --ink-2: #a8b1c4;
+    --ink-3: #6b7488;
+
+    --accent: #818cf8;
+    --accent-fg: #0a0d14;
+    --accent-soft: #1e2542;
+
+    --pos: #4ade80;
+    --pos-soft: #12321f;
+    --neu: #94a3b8;
+    --neu-soft: #202634;
+    --neg: #f87171;
+    --neg-soft: #35191b;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
   }
+}
+
+/* 手動主題覆蓋（layout 的切換鈕蓋上 data-theme，需勝過系統偏好） */
+:root[data-theme="dark"] {
+  --background: #0a0d14; --surface: #131824; --surface-2: #1b2130; --border: #262d3d;
+  --ink: #eef1f6; --ink-2: #a8b1c4; --ink-3: #6b7488;
+  --accent: #818cf8; --accent-fg: #0a0d14; --accent-soft: #1e2542;
+  --pos: #4ade80; --pos-soft: #12321f; --neu: #94a3b8; --neu-soft: #202634;
+  --neg: #f87171; --neg-soft: #35191b;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3); --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+}
+:root[data-theme="light"] {
+  --background: #f7f8fa; --surface: #ffffff; --surface-2: #f1f3f6; --border: #e3e7ed;
+  --ink: #101725; --ink-2: #475069; --ink-3: #8b93a4;
+  --accent: #4f46e5; --accent-fg: #ffffff; --accent-soft: #eef0fe;
+  --pos: #15803d; --pos-soft: #e7f6ec; --neu: #64748b; --neu-soft: #eef1f5;
+  --neg: #dc2626; --neg-soft: #fdeaea;
+  --shadow-sm: 0 1px 2px rgba(16,23,37,0.06),0 1px 3px rgba(16,23,37,0.04);
+  --shadow-md: 0 4px 12px rgba(16,23,37,0.08),0 2px 4px rgba(16,23,37,0.04);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-soft: var(--accent-soft);
+  --color-pos: var(--pos);
+  --color-pos-soft: var(--pos-soft);
+  --color-neu: var(--neu);
+  --color-neu-soft: var(--neu-soft);
+  --color-neg: var(--neg);
+  --color-neg-soft: var(--neg-soft);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
 }
 
 body {
   background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--ink);
+  font-family: var(--font-geist-sans), system-ui, "Noto Sans TC", sans-serif;
 }
+
+@keyframes fadeup {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+.animate-fadeup { animation: fadeup 0.35s ease both; }
