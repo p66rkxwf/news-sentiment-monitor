@@ -35,31 +35,37 @@ export default function TickerSearch({
   return (
     <div className="w-full max-w-sm">
       <div className="flex gap-2">
-        <input
-          type="text"
-          className={`w-full rounded-lg border px-4 py-2 text-sm uppercase shadow-sm focus:outline-none ${
-            invalid
-              ? "border-red-400 focus:border-red-500"
-              : "border-gray-300 focus:border-blue-500 dark:border-gray-600"
-          } bg-white dark:bg-gray-900`}
-          placeholder={`輸入美股代號（目前：${selected}）`}
-          value={value}
-          onChange={(e) => {
-            setValue(e.target.value);
-            setInvalid(false);
-          }}
-          onKeyDown={(e) => e.key === "Enter" && submit()}
-        />
+        <div className="relative flex-1">
+          <svg
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-3"
+            width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="M21 21l-4.3-4.3" />
+          </svg>
+          <input
+            type="text"
+            className="w-full rounded-lg border bg-surface py-2 pl-9 pr-3 text-sm uppercase shadow-sm outline-none transition focus:border-accent"
+            style={{ borderColor: invalid ? "var(--neg)" : "var(--border)" }}
+            placeholder={`代號（目前：${selected}）`}
+            value={value}
+            onChange={(e) => {
+              setValue(e.target.value);
+              setInvalid(false);
+            }}
+            onKeyDown={(e) => e.key === "Enter" && submit()}
+          />
+        </div>
         <button
           type="button"
           onClick={submit}
-          className="shrink-0 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          className="shrink-0 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg shadow-sm transition hover:opacity-90"
         >
           查詢
         </button>
       </div>
       {invalid && (
-        <p className="mt-1 text-xs text-red-500">格式錯誤：1–5 個大寫英文字母（如 AAPL、BRK.B）</p>
+        <p className="mt-1 text-xs text-neg">格式錯誤：1–5 個大寫英文字母（如 AAPL、BRK.B）</p>
       )}
       <div className="mt-2 flex flex-wrap gap-1.5">
         {SUGGESTIONS.map((t) => (
@@ -67,11 +73,12 @@ export default function TickerSearch({
             key={t}
             type="button"
             onClick={() => onSelect(t)}
-            className={`rounded-md px-2 py-0.5 text-xs ${
+            className="rounded-md px-2 py-0.5 text-xs font-medium transition"
+            style={
               t === selected
-                ? "bg-blue-600 text-white"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300"
-            }`}
+                ? { background: "var(--accent)", color: "var(--accent-fg)" }
+                : { background: "var(--surface-2)", color: "var(--ink-2)" }
+            }
           >
             {t}
           </button>
