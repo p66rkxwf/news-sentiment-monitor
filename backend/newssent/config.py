@@ -82,4 +82,6 @@ NEWS_DEFAULT_LIMIT = 20
 TICKER_PATTERN = r"^[A-Z]{1,5}(\.[A-Z])?$"
 
 # --- CORS（demo 明確 origin，勿用 *）---
-ALLOWED_ORIGINS = ["http://localhost:3000"]
+# :3000 為本專案前端預設埠；:3001 供與 stock-trend-assistant 前端同時 demo 時使用
+# （兩前端預設皆為 :3000，並存時本專案改跑 :3001）。
+ALLOWED_ORIGINS = ["http://localhost:3000", "http://localhost:3001"]
