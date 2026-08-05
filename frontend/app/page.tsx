@@ -47,6 +47,17 @@ function Card({
   );
 }
 
+/** 分組標題帶：與 stock 儀表板共用同一設計語言。左 accent 短條＋右細分隔線。 */
+function SectionHeading({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={`mb-4 flex items-center gap-3 ${className}`}>
+      <span className="h-4 w-1 rounded-full bg-accent" />
+      <h2 className="text-sm font-semibold tracking-tight text-ink">{children}</h2>
+      <span className="h-px flex-1 bg-border" />
+    </div>
+  );
+}
+
 export default function Home() {
   const [ticker, setTicker] = useState("AAPL");
   const [sentiment, setSentiment] = useState<SentimentResponse | null>(null);
@@ -137,6 +148,8 @@ export default function Home() {
         </div>
       )}
 
+      <SectionHeading>情緒總覽</SectionHeading>
+
       <div className="grid gap-5 lg:grid-cols-3">
         {/* 主情緒卡 */}
         <Card
@@ -171,12 +184,14 @@ export default function Home() {
         </Card>
       </div>
 
-      <div className="mt-5 grid gap-5 lg:grid-cols-3">
+      <SectionHeading className="mt-8">新聞明細</SectionHeading>
+
+      <div className="grid gap-5 lg:grid-cols-3">
         <Card title="熱門討論關鍵字" className="animate-fadeup lg:col-span-1">
           {loading ? (
             <div className="flex h-32 items-center justify-center text-sm text-ink-3">載入中…</div>
           ) : sentiment ? (
-            <KeywordCloud keywords={sentiment.keywords} />
+            <KeywordCloud keywords={sentiment.keywords} ticker={ticker} />
           ) : null}
         </Card>
 
