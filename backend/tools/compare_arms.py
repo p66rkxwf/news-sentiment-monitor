@@ -51,11 +51,14 @@ TARGET_ARTIFACT = "bert-sentfin"
 COMBINED_ARTIFACT = "bert-combined"
 
 
-def load_labeled_rows() -> list[dict]:
-    """讀入兩批已複核樣本；只保留 human_label 合法者，依 (ticker, title) 去重。"""
+def load_labeled_rows(paths: list[Path] | None = None) -> list[dict]:
+    """讀入已複核樣本；只保留 human_label 合法者，依 (ticker, title) 去重。
+
+    預設讀入既有兩批；確認實驗要**只在新批上檢定**（不與舊批混算），故可指定路徑。
+    """
     rows: list[dict] = []
     seen: set[tuple[str, str]] = set()
-    for path in SAMPLE_CSVS:
+    for path in paths or SAMPLE_CSVS:
         if not path.exists():
             continue
         with open(path, encoding="utf-8-sig", newline="") as f:
@@ -358,9 +361,15 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="情緒任務定義修正的方案比較")
     parser.add_argument("--llm-models", nargs="+", default=[DEFAULT_LLM_MODEL])
     parser.add_argument("--no-llm", action="store_true", help="跳過 LLM 覆核組")
+    parser.add_argument(
+        "--samples",
+        nargs="+",
+        default=None,
+        help="指定樣本 CSV（預設讀既有兩批）；確認實驗應只指定新批，不與舊批混算",
+    )
     args = parser.parse_args()
 
-    rows = load_labeled_rows()
+    rows = load_labeled_rows([Path(p) for p in args.samples] if args.samples else None)
     if not rows:
         print("找不到已標注樣本。")
         return 1
