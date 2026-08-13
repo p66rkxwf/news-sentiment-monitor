@@ -1,0 +1,31 @@
+﻿no,ticker,published_at,title,model_label,human_label_financegroup,note
+1,AAPL,2026-08-05,AI CapEx fears: Is big tech overspending?,neutral,negative,市場擔憂大型科技公司AI資本支出過度，偏向估值與獲利壓力
+2,AAPL,2026-08-05,The 9th Circuit’s Browser Analogy Leaves a Liability Vacuum,negative,neutral,偏法律議題，僅由標題無法判定對Apple財務或股價的明確方向
+3,AAPL,2026-08-05,Departing Apple CEO Tim Cook Just Gave Memory Stocks Good News,positive,neutral,利多主要指向記憶體股，對Apple本身影響方向不明
+4,AAPL,2026-08-05,Apple's Buyback Is Retiring Less Stock Just As The Memory Bill Grows,neutral,negative,回購效率下降且記憶體成本增加，對EPS與成本結構偏不利
+5,AAPL,2026-08-05,Apple’s purchase commitments jump 28%; BofA sees iPhone ramp ahead,positive,positive,採購承諾增加且分析師預期iPhone增產，反映需求與出貨預期改善
+6,AAPL,2026-08-05,Apple's Quarterly iPhone Sales Were Even Better Than They Seem,positive,positive,iPhone銷售表現優於表面數據，直接偏利多
+7,TSLA,2026-08-05,"Base Power CEO on $1B funding, AI's soaring energy demand, and taking on Tesla",positive,negative,競爭者取得大量融資並明確挑戰Tesla，競爭壓力增加
+8,TSLA,2026-08-05,Elon Musk's Tesla and SpaceX Have Shed $1.19 Trillion in Value Since June. Is This a Buying Opportunity?,neutral,negative,核心訊息為巨額市值蒸發，雖提出買入疑問但整體語氣仍偏負面
+9,TSLA,2026-08-05,Tesla vs BYD: Only One Leader in The EV Race,neutral,neutral,未揭示勝出者，無法從標題確定對Tesla的方向
+10,TSLA,2026-08-05,"Tesla and SpaceX Are Secretly Merging—Not on Paper, But in AI Power",neutral,positive,暗示Tesla與SpaceX在AI能力上產生協同效應，偏成長敘事
+11,TSLA,2026-08-05,AMD falls after Musk says SpaceX will exclusively use Nvidia AI chips,neutral,neutral,主要影響AMD與Nvidia，對Tesla沒有明確直接財務影響
+12,TSLA,2026-08-05,"S&P 500, Dow at record highs as Mideast hopes offset SpaceX, AMD drag",positive,neutral,主要描述大盤、SpaceX及AMD，對Tesla方向不明
+13,NVDA,2026-08-03,"Tech stocks today: SpaceX, AMD top quarterly results, but fail to impress Wall Street. Shares sink",neutral,neutral,負面主要針對SpaceX與AMD，未能確定對Nvidia有直接負面影響
+14,NVDA,2026-08-05,SpaceX stock declines post-earnings. Are investors worried about AI spending?,negative,neutral,AI支出疑慮可能影響Nvidia但屬間接推論，標題主要針對SpaceX
+15,NVDA,2026-08-04,'This was not an exceptional result': Strategist talks AMD earnings & 'shocking' capex,neutral,neutral,AMD財報與資本支出訊息對Nvidia可能有正負兩面解讀
+16,NVDA,2026-08-04,"Marvell, Sandisk, SK Hynix lead semiconductor stock rally as S&P 500 trades at record highs",positive,positive,半導體族群上漲且市場創高，對Nvidia具正面的產業與風險偏好讀穿
+17,NVDA,2026-08-05,Pivotal Q2 Profits Show Stellantis Ready to Drive Turnaround. Time to Buy the Stock?,positive,neutral,主要針對Stellantis，與Nvidia直接關聯不足
+18,NVDA,2026-08-05,"5 Stocks Ready to Pay You a Dividend in August, but You Must Buy Them Today",neutral,positive,若作為Nvidia相關新聞，買入與股息措辭具有明顯正向投資語氣
+19,MSFT,2026-08-05,SpaceX Has Already Lost AI Race,negative,neutral,SpaceX在AI競爭落後未必直接等同Microsoft受益，方向不夠明確
+20,MSFT,2026-08-05,Why Bill Ackman Poured $2 Billion Into a Stock His Peers Were Fleeing,neutral,positive,大型知名投資人逆勢投入巨額資金，整體為偏多投資敘事
+21,MSFT,2026-08-05,Arista Networks Stock Surges as Earnings Prove AI Demand Is Real,positive,positive,AI需求獲財報驗證，對Microsoft雲端與AI業務需求形成正面讀穿
+22,MSFT,2026-08-05,Who Might Buy Snap If Its Founders Ever Decide to Sell,neutral,neutral,屬潛在併購猜測，且對Microsoft的財務影響與方向均不確定
+23,MSFT,2026-08-05,Microsoft Extends Winning Streak Amid Earnings Surge; Is The Stock A Buy Now?,positive,positive,財報帶動上漲且延續強勢走勢，明顯偏多
+24,MSFT,2026-08-05,"Canada's Shopify forecasts revenue above estimates, shares surge",positive,neutral,利多主要屬於Shopify，對Microsoft沒有明確直接影響
+25,GOOG,2026-08-05,Booking vs. Carvana: Which Consumer Stock Is a Better Buy in 2026?,neutral,neutral,與Alphabet缺乏明確直接關聯
+26,GOOG,2026-08-05,Anthropic is hiring an AI chip design team,neutral,neutral,自研晶片可能影響Google也可能擴大AI生態，僅從標題方向不明
+27,GOOG,2026-08-05,Blackstone pitches $36 billion debt deal for Anthropic AI chips,positive,neutral,Anthropic取得AI晶片融資對Alphabet可能有合作與競爭兩面影響
+28,GOOG,2026-08-05,Wall Street Bulls Look Optimistic About Alphabet (GOOGL): Should You Buy?,neutral,positive,華爾街分析師樂觀且帶有買入討論，明顯偏多
+29,GOOG,2026-08-05,DoorDash Gets FAA Green Light for Commercial Drone Deliveries,positive,positive,若涉及Alphabet旗下Wing合作，監管放行商業無人機配送偏利多
+30,GOOG,2026-08-05,Self-driving Ubers to be launched in London within weeks,neutral,neutral,未由標題確認是否涉及Waymo，無法確定對Alphabet的直接影響

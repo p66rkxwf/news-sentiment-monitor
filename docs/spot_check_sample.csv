@@ -1,28 +1,28 @@
 ﻿ticker,published_at,title,model_label,confidence,human_label
 AAPL,2026-08-05,AI CapEx fears: Is big tech overspending?,neutral,0.901,negative
 AAPL,2026-08-05,The 9th Circuit’s Browser Analogy Leaves a Liability Vacuum,negative,0.978,neutral
-AAPL,2026-08-05,Departing Apple CEO Tim Cook Just Gave Memory Stocks Good News,positive,0.987,positive
+AAPL,2026-08-05,Departing Apple CEO Tim Cook Just Gave Memory Stocks Good News,positive,0.987,neutral
 AAPL,2026-08-05,Apple's Buyback Is Retiring Less Stock Just As The Memory Bill Grows,neutral,0.973,negative
 AAPL,2026-08-05,Apple’s purchase commitments jump 28%; BofA sees iPhone ramp ahead,positive,0.997,positive
 AAPL,2026-08-05,Apple's Quarterly iPhone Sales Were Even Better Than They Seem,positive,0.998,positive
-TSLA,2026-08-05,"Base Power CEO on $1B funding, AI's soaring energy demand, and taking on Tesla",positive,0.988,neutral
+TSLA,2026-08-05,"Base Power CEO on $1B funding, AI's soaring energy demand, and taking on Tesla",positive,0.988,negative
 TSLA,2026-08-05,Elon Musk's Tesla and SpaceX Have Shed $1.19 Trillion in Value Since June. Is This a Buying Opportunity?,neutral,0.983,negative
 TSLA,2026-08-05,Tesla vs BYD: Only One Leader in The EV Race,neutral,0.994,neutral
-TSLA,2026-08-05,"Tesla and SpaceX Are Secretly Merging—Not on Paper, But in AI Power",neutral,0.993,neutral
-TSLA,2026-08-05,AMD falls after Musk says SpaceX will exclusively use Nvidia AI chips,neutral,0.994,negative
-TSLA,2026-08-05,"S&P 500, Dow at record highs as Mideast hopes offset SpaceX, AMD drag",positive,0.95,positive
-NVDA,2026-08-03,"Tech stocks today: SpaceX, AMD top quarterly results, but fail to impress Wall Street. Shares sink",neutral,0.936,negative
-NVDA,2026-08-05,SpaceX stock declines post-earnings. Are investors worried about AI spending?,negative,0.997,negative
-NVDA,2026-08-04,'This was not an exceptional result': Strategist talks AMD earnings & 'shocking' capex,neutral,0.975,negative
+TSLA,2026-08-05,"Tesla and SpaceX Are Secretly Merging—Not on Paper, But in AI Power",neutral,0.993,positive
+TSLA,2026-08-05,AMD falls after Musk says SpaceX will exclusively use Nvidia AI chips,neutral,0.994,neutral
+TSLA,2026-08-05,"S&P 500, Dow at record highs as Mideast hopes offset SpaceX, AMD drag",positive,0.95,neutral
+NVDA,2026-08-03,"Tech stocks today: SpaceX, AMD top quarterly results, but fail to impress Wall Street. Shares sink",neutral,0.936,neutral
+NVDA,2026-08-05,SpaceX stock declines post-earnings. Are investors worried about AI spending?,negative,0.997,neutral
+NVDA,2026-08-04,'This was not an exceptional result': Strategist talks AMD earnings & 'shocking' capex,neutral,0.975,neutral
 NVDA,2026-08-04,"Marvell, Sandisk, SK Hynix lead semiconductor stock rally as S&P 500 trades at record highs",positive,0.997,positive
-NVDA,2026-08-05,Pivotal Q2 Profits Show Stellantis Ready to Drive Turnaround. Time to Buy the Stock?,positive,0.985,positive
-NVDA,2026-08-05,"5 Stocks Ready to Pay You a Dividend in August, but You Must Buy Them Today",neutral,0.997,neutral
-MSFT,2026-08-05,SpaceX Has Already Lost AI Race,negative,0.997,negative
-MSFT,2026-08-05,Why Bill Ackman Poured $2 Billion Into a Stock His Peers Were Fleeing,neutral,0.989,neutral
+NVDA,2026-08-05,Pivotal Q2 Profits Show Stellantis Ready to Drive Turnaround. Time to Buy the Stock?,positive,0.985,neutral
+NVDA,2026-08-05,"5 Stocks Ready to Pay You a Dividend in August, but You Must Buy Them Today",neutral,0.997,positive
+MSFT,2026-08-05,SpaceX Has Already Lost AI Race,negative,0.997,neutral
+MSFT,2026-08-05,Why Bill Ackman Poured $2 Billion Into a Stock His Peers Were Fleeing,neutral,0.989,positive
 MSFT,2026-08-05,Arista Networks Stock Surges as Earnings Prove AI Demand Is Real,positive,0.864,positive
 MSFT,2026-08-05,Who Might Buy Snap If Its Founders Ever Decide to Sell,neutral,0.996,neutral
 MSFT,2026-08-05,Microsoft Extends Winning Streak Amid Earnings Surge; Is The Stock A Buy Now?,positive,0.997,positive
-MSFT,2026-08-05,"Canada's Shopify forecasts revenue above estimates, shares surge",positive,0.997,positive
+MSFT,2026-08-05,"Canada's Shopify forecasts revenue above estimates, shares surge",positive,0.997,neutral
 GOOG,2026-08-05,Booking vs. Carvana: Which Consumer Stock Is a Better Buy in 2026?,neutral,0.996,neutral
 GOOG,2026-08-05,Anthropic is hiring an AI chip design team,neutral,0.997,neutral
 GOOG,2026-08-05,Blackstone pitches $36 billion debt deal for Anthropic AI chips,positive,0.994,neutral
