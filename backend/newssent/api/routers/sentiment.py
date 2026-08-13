@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, Query, Request
 from newssent.api.deps import get_valid_ticker
 from newssent.api.errors import NewsNotFoundError, NewsSourceUnavailableError
 from newssent.api.schemas import KeywordScore, NewsItem, NewsResponse, SentimentResponse
-from newssent.config import NEWS_DEFAULT_LIMIT
+from newssent.config import NEWS_DEFAULT_LIMIT, company_name
 from newssent.data.provider import NewsProvider, NewsProviderError, NewsResult
 from newssent.inference.analyzer import Analyzer
 
@@ -54,7 +54,7 @@ def get_news(
             sentiment=c.label,
             confidence=round(c.confidence, 4),
         )
-        for c in analyzer.classify(result.articles)
+        for c in analyzer.classify(result.articles, target=company_name(ticker))
     ]
     return NewsResponse(ticker=ticker, articles=items, stale=result.stale, is_mock=False)
 

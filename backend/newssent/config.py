@@ -59,12 +59,42 @@ SPLIT_SEED = 42
 SPLIT_RATIOS: tuple[float, float, float] = (0.70, 0.15, 0.15)  # train/val/test
 MAX_LENGTH = 128                        # Phase 1 依句長分佈最終確認
 
-# --- 模型（Phase 4 選型）---
+# --- 模型（Phase 4 選型；2026-08-14 實驗 #6 換任務定義）---
 # 2026-07-11 五模型比較（驗證集 Macro F1 選型，避免用測試集挑模型的樂觀偏差）：
 #   bert(調參後 lr=2e-5, max_length=64) 0.8542 > distilbert 0.8395 > roberta 0.8451
 #   > tfidf_lr 0.7121 > svm 0.7079；測試集確認 bert 0.8458 仍居首
-# 選型理由詳見 docs/model_selection.md（F1 提升幅度 vs 推論成本）
-PRODUCTION_MODEL = "bert"               # artifacts/<名稱>/，由 compare.py 結果決定
+# 2026-08-14 實驗 #6：財金組複核暴露的錯誤（抓不到負面、過度給方向）根因是**任務定義**——
+#   PhraseBank 量的是語氣，線上要答的是「這則標題對這支股票是好是壞」。改用
+#   PhraseBank＋SEntFiN 合併語料訓練的**目標導向**模型（輸入為 (公司名, 標題) 配對），
+#   在 60 則財金組標注上一致率 46.7%→61.7%（McNemar p=0.035，未過多重比較修正）。
+#   完整比較與誠實邊界見 docs/experiment_target_sentiment.md。
+PRODUCTION_MODEL = "bert-combined"      # artifacts/<名稱>/，由 compare.py 結果決定
+
+# --- 目標導向推論（實驗 #6）---
+# 目標導向模型的輸入是 (目標實體, 標題)，但線上只拿得到 ticker，而新聞標題裡寫的是
+# 公司名。這份對照表把 ticker 還原成訓練語料中會出現的實體字串；查無對照時退回
+# ticker 本身（模型仍可運作，只是少了名稱線索）。
+TICKER_COMPANY_NAMES: dict[str, str] = {
+    "AAPL": "Apple",
+    "TSLA": "Tesla",
+    "NVDA": "Nvidia",
+    "MSFT": "Microsoft",
+    "GOOG": "Google",
+    "GOOGL": "Google",
+    "AMZN": "Amazon",
+    "META": "Meta",
+    "AMD": "AMD",
+    "INTC": "Intel",
+    "TSM": "TSMC",
+    "MU": "Micron",
+    "NFLX": "Netflix",
+    "AVGO": "Broadcom",
+}
+
+
+def company_name(ticker: str) -> str:
+    return TICKER_COMPANY_NAMES.get((ticker or "").upper(), ticker)
+
 
 # --- 情緒指數（Phase 5 aggregate.py）---
 # score = Σ(sign × confidence) / n，映射 [−1, +1]；|score| 超過門檻才判為正/負，否則中性

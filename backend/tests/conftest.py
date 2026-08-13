@@ -26,13 +26,17 @@ class FakeAnalyzer:
         "metrics": {"test": {"macro_f1": 0.72}},
     }
 
-    def classify(self, articles: list[Article]) -> list[ArticleSentiment]:
+    target_dependent = False
+
+    def classify(
+        self, articles: list[Article], target: str | None = None
+    ) -> list[ArticleSentiment]:
         return [
             ArticleSentiment(article=a, label="positive", confidence=0.9) for a in articles
         ]
 
     def analyze(self, ticker: str, articles: list[Article]) -> AnalysisResult:
-        classified = self.classify(articles)
+        classified = self.classify(articles, target=ticker)
         return AnalysisResult(
             index=sentiment_index([(c.label, c.confidence) for c in classified]),
             articles=classified,

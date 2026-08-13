@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from newssent.config import ARTIFACTS_DIR, LABEL_NAMES
+from newssent.config import ARTIFACTS_DIR, LABEL_NAMES, company_name
 from newssent.data.provider import Article
 from newssent.inference.aggregate import SentimentIndex, sentiment_index
 from newssent.inference.keywords import extract_keywords
@@ -45,12 +45,22 @@ class Analyzer:
     def version(self) -> str:
         return f"{self.metadata['model_name']}-{self.metadata['trained_at'][:10]}"
 
-    def classify(self, articles: list[Article]) -> list[ArticleSentiment]:
-        from newssent.text.preprocess import clean_text
+    @property
+    def target_dependent(self) -> bool:
+        """目標導向模型的輸入是 (公司, 標題)；舊的句子層級 artifact 無此鍵，預設 False。"""
+        return bool(self.metadata.get("target_dependent", False))
+
+    def classify(self, articles: list[Article], target: str | None = None) -> list[ArticleSentiment]:
+        from newssent.text.preprocess import build_target_text, clean_text
 
         if not articles:
             return []
-        texts = [clean_text(a.title) for a in articles]
+        if self.target_dependent and target:
+            # 訓練與推論走同一個 build_target_text（其內部亦呼叫 clean_text），
+            # 目標字串少了或多了都會讓輸入分佈與訓練不一致，故只有此一入口。
+            texts = [build_target_text(target, a.title) for a in articles]
+        else:
+            texts = [clean_text(a.title) for a in articles]
         proba = self._model.predict_proba(texts)
         out = []
         for article, p in zip(articles, proba):
@@ -63,7 +73,7 @@ class Analyzer:
     def analyze(self, ticker: str, articles: list[Article]) -> AnalysisResult:
         from newssent.text.preprocess import clean_text
 
-        classified = self.classify(articles)
+        classified = self.classify(articles, target=company_name(ticker))
         index = sentiment_index([(c.label, c.confidence) for c in classified])
         keywords = extract_keywords([clean_text(a.title) for a in articles], ticker)
         return AnalysisResult(index=index, articles=classified, keywords=keywords)

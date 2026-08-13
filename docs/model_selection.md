@@ -3,7 +3,13 @@
 > 對應申請表預期成果「客觀的模型選型依據」：不只看分數，綜合
 > 「Macro F1 提升幅度 vs 推論成本」給出選型理由。數據見 [model_comparison.md](model_comparison.md)。
 
-## 選型結果：**BERT（fine-tuned，lr=2e-5、max_length=64）**
+⚠️ **2026-08-14 更新**：production 已改為 **`bert-combined`**（PhraseBank＋SEntFiN
+合併語料訓練的**目標導向**模型）。本頁下方的比較仍然有效，但它比的是
+「哪個架構最會做 PhraseBank 的語氣分類」；實驗 #6 發現**任務定義本身**才是線上表現的瓶頸，
+換任務比換架構有效得多。裁決與誠實邊界見
+[experiment_target_sentiment.md](experiment_target_sentiment.md)。
+
+## 選型結果（架構層級）：**BERT（fine-tuned，lr=2e-5、max_length=64）**
 
 ## 選型方法
 

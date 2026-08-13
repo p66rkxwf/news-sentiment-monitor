@@ -1,0 +1,121 @@
+﻿ticker,title,llm_model,llm_label
+AAPL,Apple is suing OpenAI over alleged trade secret theft,gemma3:27b,negative
+AAPL,How SK Hynix picked the 'perfect time' to list in the US,gemma3:27b,neutral
+AAPL,What to expect this earnings season amid lingering Hindenburg Omens,gemma3:27b,neutral
+AAPL,"The 2 Magnificent Seven Stocks With the Most Upside Potential, According to Wall Street",gemma3:27b,positive
+AAPL,Apple sues OpenAI alleging trade secret theft,gemma3:27b,negative
+AAPL,Has Meta ever had a stock split? What sets this ‘Mag 7’ stock apart,gemma3:27b,neutral
+TSLA,SK Hynix ETFs Are Coming. Exactly Who Should Own Them.,gemma3:27b,neutral
+TSLA,"If You Have $1,000 to Invest in EV Stocks, Should It Go to Tesla or Rivian?",gemma3:27b,neutral
+TSLA,Tesla Reportedly Pushes Staff Toward Grok 4.5 As AI Spending Cap Takes Effect,gemma3:27b,neutral
+TSLA,Review & Preview: Why the Dow Snapped Its Streak,gemma3:27b,neutral
+TSLA,"Waymo, Tesla must fix a dangerous issue with their robotaxis, NHTSA says",gemma3:27b,negative
+TSLA,Tesla Tears Down Model S/X Line In Just 46 Days For Optimus Production,gemma3:27b,neutral
+NVDA,"Stock market today: Dow, S&P 500, Nasdaq rise to cap choppy week as SK Hynix pops in US debut",gemma3:27b,neutral
+NVDA,Chip stocks regain some ground after whipsaw of a trading week,gemma3:27b,neutral
+NVDA,Why you should care about SK Hynix's IPO,gemma3:27b,neutral
+NVDA,Shares of Intel and AMD Have Plummeted in the Last Few Days. Is It Time to Panic?,gemma3:27b,positive
+NVDA,This Overlooked Investment Could Set You Up for Life. Here's How.,gemma3:27b,neutral
+NVDA,Micron CEO Sanjay Mehrotra Announces $250 Billion Investment for Expanded Artificial Intelligence (AI) Memory Chip Development,gemma3:27b,positive
+MSFT,PC shipments fall as AI demand spikes memory prices,gemma3:27b,neutral
+MSFT,Advanced Micro Devices vs. Texas Instruments: Which Technology Stock Is a Better Buy in 2026?,gemma3:27b,neutral
+MSFT,Arista Networks (ANET) Could Be 2% Undervalued Following Its AI Switching Push,gemma3:27b,neutral
+MSFT,Why tech investors are reevaluating AI investments,gemma3:27b,neutral
+MSFT,"I’d Put $25,000 in These 2 ETFs Before the Next Earnings Season",gemma3:27b,neutral
+MSFT,"Amazon, Microsoft and Meta Among HSBC Earnings Picks",gemma3:27b,neutral
+GOOG,What Meta's Muse AI image tool means for Instagram privacy,gemma3:27b,neutral
+GOOG,Why Microsoft is not this portfolio manager's stock pick,gemma3:27b,neutral
+GOOG,You Didn’t Need Alphabet: XLK Returned 29.35% to GOOGL’s 14.26%,gemma3:27b,negative
+GOOG,UK Brings Amazon Web Services Under Direct Financial Oversight,gemma3:27b,neutral
+GOOG,IBM's Quantum Upside Meets Valuation Risk,gemma3:27b,neutral
+GOOG,AI Giants Add $350 Billion Debt as $725 Billion Spending Surges,gemma3:27b,negative
+AAPL,AI CapEx fears: Is big tech overspending?,gemma3:27b,neutral
+AAPL,The 9th Circuit’s Browser Analogy Leaves a Liability Vacuum,gemma3:27b,negative
+AAPL,Departing Apple CEO Tim Cook Just Gave Memory Stocks Good News,gemma3:27b,neutral
+AAPL,Apple's Buyback Is Retiring Less Stock Just As The Memory Bill Grows,gemma3:27b,negative
+AAPL,Apple’s purchase commitments jump 28%; BofA sees iPhone ramp ahead,gemma3:27b,positive
+AAPL,Apple's Quarterly iPhone Sales Were Even Better Than They Seem,gemma3:27b,positive
+TSLA,"Base Power CEO on $1B funding, AI's soaring energy demand, and taking on Tesla",gemma3:27b,neutral
+TSLA,Elon Musk's Tesla and SpaceX Have Shed $1.19 Trillion in Value Since June. Is This a Buying Opportunity?,gemma3:27b,neutral
+TSLA,Tesla vs BYD: Only One Leader in The EV Race,gemma3:27b,neutral
+TSLA,"Tesla and SpaceX Are Secretly Merging—Not on Paper, But in AI Power",gemma3:27b,positive
+TSLA,AMD falls after Musk says SpaceX will exclusively use Nvidia AI chips,gemma3:27b,negative
+TSLA,"S&P 500, Dow at record highs as Mideast hopes offset SpaceX, AMD drag",gemma3:27b,neutral
+NVDA,"Tech stocks today: SpaceX, AMD top quarterly results, but fail to impress Wall Street. Shares sink",gemma3:27b,neutral
+NVDA,SpaceX stock declines post-earnings. Are investors worried about AI spending?,gemma3:27b,neutral
+NVDA,'This was not an exceptional result': Strategist talks AMD earnings & 'shocking' capex,gemma3:27b,neutral
+NVDA,"Marvell, Sandisk, SK Hynix lead semiconductor stock rally as S&P 500 trades at record highs",gemma3:27b,neutral
+NVDA,Pivotal Q2 Profits Show Stellantis Ready to Drive Turnaround. Time to Buy the Stock?,gemma3:27b,neutral
+NVDA,"5 Stocks Ready to Pay You a Dividend in August, but You Must Buy Them Today",gemma3:27b,neutral
+MSFT,SpaceX Has Already Lost AI Race,gemma3:27b,neutral
+MSFT,Why Bill Ackman Poured $2 Billion Into a Stock His Peers Were Fleeing,gemma3:27b,neutral
+MSFT,Arista Networks Stock Surges as Earnings Prove AI Demand Is Real,gemma3:27b,neutral
+MSFT,Who Might Buy Snap If Its Founders Ever Decide to Sell,gemma3:27b,neutral
+MSFT,Microsoft Extends Winning Streak Amid Earnings Surge; Is The Stock A Buy Now?,gemma3:27b,positive
+MSFT,"Canada's Shopify forecasts revenue above estimates, shares surge",gemma3:27b,neutral
+GOOG,Booking vs. Carvana: Which Consumer Stock Is a Better Buy in 2026?,gemma3:27b,neutral
+GOOG,Anthropic is hiring an AI chip design team,gemma3:27b,neutral
+GOOG,Blackstone pitches $36 billion debt deal for Anthropic AI chips,gemma3:27b,neutral
+GOOG,Wall Street Bulls Look Optimistic About Alphabet (GOOGL): Should You Buy?,gemma3:27b,neutral
+GOOG,DoorDash Gets FAA Green Light for Commercial Drone Deliveries,gemma3:27b,neutral
+GOOG,Self-driving Ubers to be launched in London within weeks,gemma3:27b,neutral
+AAPL,Apple is suing OpenAI over alleged trade secret theft,qwen2.5:14b,neutral
+AAPL,How SK Hynix picked the 'perfect time' to list in the US,qwen2.5:14b,neutral
+AAPL,What to expect this earnings season amid lingering Hindenburg Omens,qwen2.5:14b,neutral
+AAPL,"The 2 Magnificent Seven Stocks With the Most Upside Potential, According to Wall Street",qwen2.5:14b,neutral
+AAPL,Apple sues OpenAI alleging trade secret theft,qwen2.5:14b,negative
+AAPL,Has Meta ever had a stock split? What sets this ‘Mag 7’ stock apart,qwen2.5:14b,neutral
+TSLA,SK Hynix ETFs Are Coming. Exactly Who Should Own Them.,qwen2.5:14b,neutral
+TSLA,"If You Have $1,000 to Invest in EV Stocks, Should It Go to Tesla or Rivian?",qwen2.5:14b,neutral
+TSLA,Tesla Reportedly Pushes Staff Toward Grok 4.5 As AI Spending Cap Takes Effect,qwen2.5:14b,neutral
+TSLA,Review & Preview: Why the Dow Snapped Its Streak,qwen2.5:14b,neutral
+TSLA,"Waymo, Tesla must fix a dangerous issue with their robotaxis, NHTSA says",qwen2.5:14b,negative
+TSLA,Tesla Tears Down Model S/X Line In Just 46 Days For Optimus Production,qwen2.5:14b,neutral
+NVDA,"Stock market today: Dow, S&P 500, Nasdaq rise to cap choppy week as SK Hynix pops in US debut",qwen2.5:14b,neutral
+NVDA,Chip stocks regain some ground after whipsaw of a trading week,qwen2.5:14b,neutral
+NVDA,Why you should care about SK Hynix's IPO,qwen2.5:14b,neutral
+NVDA,Shares of Intel and AMD Have Plummeted in the Last Few Days. Is It Time to Panic?,qwen2.5:14b,neutral
+NVDA,This Overlooked Investment Could Set You Up for Life. Here's How.,qwen2.5:14b,neutral
+NVDA,Micron CEO Sanjay Mehrotra Announces $250 Billion Investment for Expanded Artificial Intelligence (AI) Memory Chip Development,qwen2.5:14b,neutral
+MSFT,PC shipments fall as AI demand spikes memory prices,qwen2.5:14b,neutral
+MSFT,Advanced Micro Devices vs. Texas Instruments: Which Technology Stock Is a Better Buy in 2026?,qwen2.5:14b,neutral
+MSFT,Arista Networks (ANET) Could Be 2% Undervalued Following Its AI Switching Push,qwen2.5:14b,neutral
+MSFT,Why tech investors are reevaluating AI investments,qwen2.5:14b,neutral
+MSFT,"I’d Put $25,000 in These 2 ETFs Before the Next Earnings Season",qwen2.5:14b,neutral
+MSFT,"Amazon, Microsoft and Meta Among HSBC Earnings Picks",qwen2.5:14b,neutral
+GOOG,What Meta's Muse AI image tool means for Instagram privacy,qwen2.5:14b,neutral
+GOOG,Why Microsoft is not this portfolio manager's stock pick,qwen2.5:14b,neutral
+GOOG,You Didn’t Need Alphabet: XLK Returned 29.35% to GOOGL’s 14.26%,qwen2.5:14b,neutral
+GOOG,UK Brings Amazon Web Services Under Direct Financial Oversight,qwen2.5:14b,neutral
+GOOG,IBM's Quantum Upside Meets Valuation Risk,qwen2.5:14b,neutral
+GOOG,AI Giants Add $350 Billion Debt as $725 Billion Spending Surges,qwen2.5:14b,neutral
+AAPL,AI CapEx fears: Is big tech overspending?,qwen2.5:14b,neutral
+AAPL,The 9th Circuit’s Browser Analogy Leaves a Liability Vacuum,qwen2.5:14b,neutral
+AAPL,Departing Apple CEO Tim Cook Just Gave Memory Stocks Good News,qwen2.5:14b,neutral
+AAPL,Apple's Buyback Is Retiring Less Stock Just As The Memory Bill Grows,qwen2.5:14b,negative
+AAPL,Apple’s purchase commitments jump 28%; BofA sees iPhone ramp ahead,qwen2.5:14b,positive
+AAPL,Apple's Quarterly iPhone Sales Were Even Better Than They Seem,qwen2.5:14b,positive
+TSLA,"Base Power CEO on $1B funding, AI's soaring energy demand, and taking on Tesla",qwen2.5:14b,neutral
+TSLA,Elon Musk's Tesla and SpaceX Have Shed $1.19 Trillion in Value Since June. Is This a Buying Opportunity?,qwen2.5:14b,neutral
+TSLA,Tesla vs BYD: Only One Leader in The EV Race,qwen2.5:14b,neutral
+TSLA,"Tesla and SpaceX Are Secretly Merging—Not on Paper, But in AI Power",qwen2.5:14b,neutral
+TSLA,AMD falls after Musk says SpaceX will exclusively use Nvidia AI chips,qwen2.5:14b,neutral
+TSLA,"S&P 500, Dow at record highs as Mideast hopes offset SpaceX, AMD drag",qwen2.5:14b,neutral
+NVDA,"Tech stocks today: SpaceX, AMD top quarterly results, but fail to impress Wall Street. Shares sink",qwen2.5:14b,neutral
+NVDA,SpaceX stock declines post-earnings. Are investors worried about AI spending?,qwen2.5:14b,neutral
+NVDA,'This was not an exceptional result': Strategist talks AMD earnings & 'shocking' capex,qwen2.5:14b,neutral
+NVDA,"Marvell, Sandisk, SK Hynix lead semiconductor stock rally as S&P 500 trades at record highs",qwen2.5:14b,neutral
+NVDA,Pivotal Q2 Profits Show Stellantis Ready to Drive Turnaround. Time to Buy the Stock?,qwen2.5:14b,neutral
+NVDA,"5 Stocks Ready to Pay You a Dividend in August, but You Must Buy Them Today",qwen2.5:14b,neutral
+MSFT,SpaceX Has Already Lost AI Race,qwen2.5:14b,neutral
+MSFT,Why Bill Ackman Poured $2 Billion Into a Stock His Peers Were Fleeing,qwen2.5:14b,neutral
+MSFT,Arista Networks Stock Surges as Earnings Prove AI Demand Is Real,qwen2.5:14b,neutral
+MSFT,Who Might Buy Snap If Its Founders Ever Decide to Sell,qwen2.5:14b,neutral
+MSFT,Microsoft Extends Winning Streak Amid Earnings Surge; Is The Stock A Buy Now?,qwen2.5:14b,neutral
+MSFT,"Canada's Shopify forecasts revenue above estimates, shares surge",qwen2.5:14b,neutral
+GOOG,Booking vs. Carvana: Which Consumer Stock Is a Better Buy in 2026?,qwen2.5:14b,neutral
+GOOG,Anthropic is hiring an AI chip design team,qwen2.5:14b,neutral
+GOOG,Blackstone pitches $36 billion debt deal for Anthropic AI chips,qwen2.5:14b,neutral
+GOOG,Wall Street Bulls Look Optimistic About Alphabet (GOOGL): Should You Buy?,qwen2.5:14b,neutral
+GOOG,DoorDash Gets FAA Green Light for Commercial Drone Deliveries,qwen2.5:14b,neutral
+GOOG,Self-driving Ubers to be launched in London within weeks,qwen2.5:14b,neutral

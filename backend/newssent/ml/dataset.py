@@ -77,3 +77,42 @@ def prepare_split(
     """先去重、再分層切分。回傳的索引皆為原始（未去重前）索引。"""
     kept = dedup_indices(texts)
     return stratified_split(labels, ratios, seed, indices=kept)
+
+
+def grouped_stratified_split(
+    groups: list,
+    labels: list,
+    ratios: tuple[float, float, float],
+    seed: int,
+    indices: list[int] | None = None,
+) -> Split:
+    """以「群組」為單位分層切分——同一群組的所有樣本必落在同一個集合。
+
+    SEntFiN 一則標題可帶多個實體（例：一則標題同時對 A 公司正面、對 B 公司負面），
+    展開成多列後若按「列」切分，同一則標題會同時出現在訓練與測試集，
+    模型只要背下標題就能答對另一列，測試分數整批虛高。故以標題為群組切分。
+
+    分層以「群組的第一個標籤」為代表（群組通常只有 1-2 列），
+    確保三個集合的類別分佈仍大致一致。
+    """
+    pool = list(range(len(labels))) if indices is None else list(indices)
+
+    members: dict = {}
+    for idx in pool:
+        members.setdefault(groups[idx], []).append(idx)
+
+    group_keys = sorted(members, key=str)
+    group_labels = [labels[members[g][0]] for g in group_keys]
+    group_split = stratified_split(group_labels, ratios, seed)
+
+    def expand(group_positions: list[int]) -> list[int]:
+        out: list[int] = []
+        for pos in group_positions:
+            out += members[group_keys[pos]]
+        return sorted(out)
+
+    return Split(
+        train=expand(group_split.train),
+        val=expand(group_split.val),
+        test=expand(group_split.test),
+    )
