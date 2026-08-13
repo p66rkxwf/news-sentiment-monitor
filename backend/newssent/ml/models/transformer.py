@@ -28,6 +28,7 @@ from transformers import (
 
 from newssent.config import LABEL_NAMES, MAX_LENGTH
 from newssent.ml.models.base import N_CLASSES, SentimentModel
+from newssent.text.preprocess import split_target_text
 
 
 class _TextDataset(torch.utils.data.Dataset):
@@ -104,6 +105,22 @@ class TransformerModel(SentimentModel):
         }
 
     def _encode(self, texts: list[str]):
+        # 目標導向輸入（"實體 ||| 標題"）還原成真正的 sentence-pair 再 tokenize：
+        # 交給 tokenizer 自己插入該模型家族正確的分隔符與 token_type_ids，
+        # 而不是把 "[SEP]" 字面值塞進字串（RoBERTa 等模型並不吃這個字面值）。
+        # target 放前段：截斷時砍掉的是標題尾巴，目標實體必定保留。
+        parts = [split_target_text(t) for t in texts]
+        if any(target is not None for target, _ in parts):
+            targets = [target or "" for target, _ in parts]
+            bodies = [body for _, body in parts]
+            return self._tokenizer(
+                targets,
+                bodies,
+                truncation=True,
+                padding=True,
+                max_length=self.max_length,
+                return_tensors="pt",
+            )
         return self._tokenizer(
             texts,
             truncation=True,
