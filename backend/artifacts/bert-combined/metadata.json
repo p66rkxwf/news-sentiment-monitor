@@ -1,0 +1,95 @@
+{
+  "model_name": "bert-combined",
+  "trained_at": "2026-08-13T17:02:03+00:00",
+  "label_names": [
+    "negative",
+    "neutral",
+    "positive"
+  ],
+  "phrasebank_agreement": "50agree",
+  "split_seed": 42,
+  "split_ratios": [
+    0.7,
+    0.15,
+    0.15
+  ],
+  "git_commit": "814f2d9",
+  "metrics": {
+    "val": {
+      "n_samples": 2890,
+      "accuracy": 0.8771626297577855,
+      "macro_f1": 0.8763547908992829,
+      "majority_class": "neutral",
+      "majority_baseline_accuracy": 0.43529411764705883,
+      "confusion_matrix": [
+        [
+          588,
+          64,
+          22
+        ],
+        [
+          62,
+          1117,
+          79
+        ],
+        [
+          26,
+          102,
+          830
+        ]
+      ],
+      "label_distribution": {
+        "negative": 674,
+        "neutral": 1258,
+        "positive": 958
+      },
+      "cpu_ms_per_sentence": 15.212,
+      "gpu_ms_per_sentence": 0.348
+    },
+    "test": {
+      "n_samples": 2859,
+      "accuracy": 0.8751311647429171,
+      "macro_f1": 0.875358687684931,
+      "majority_class": "neutral",
+      "majority_baseline_accuracy": 0.4372158097236796,
+      "confusion_matrix": [
+        [
+          559,
+          58,
+          24
+        ],
+        [
+          57,
+          1111,
+          82
+        ],
+        [
+          17,
+          119,
+          832
+        ]
+      ],
+      "label_distribution": {
+        "negative": 641,
+        "neutral": 1250,
+        "positive": 968
+      },
+      "cpu_ms_per_sentence": 15.502,
+      "gpu_ms_per_sentence": 0.32
+    },
+    "train_seconds": 161.1
+  },
+  "n_train": 13380,
+  "corpus": "combined",
+  "target_dependent": true,
+  "n_headlines": 10673,
+  "n_duplicates_removed": 88,
+  "hyperparams": {
+    "pretrained": "bert-base-uncased",
+    "max_length": 128,
+    "lr": 2e-05,
+    "epochs": 8,
+    "batch_size": 32,
+    "warmup_ratio": 0.1
+  }
+}

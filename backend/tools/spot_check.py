@@ -29,6 +29,7 @@ from newssent.config import (  # noqa: E402
     LABEL_NAMES,
     NEWS_CACHE_BUCKET_SECONDS,
     PRODUCTION_MODEL,
+    company_name,
 )
 from newssent.data.cache import NewsCache  # noqa: E402
 from newssent.data.provider import YFinanceNewsProvider  # noqa: E402
@@ -54,7 +55,7 @@ def cmd_sample(tickers: list[str], per_ticker: int) -> int:
         except Exception as exc:
             print(f"[略過] {ticker}: {exc}")
             continue
-        classified = analyzer.classify(result.articles)
+        classified = analyzer.classify(result.articles, target=company_name(ticker))
         n = 0
         for c in classified:
             if c.article.title in seen_titles or n >= per_ticker:
