@@ -12,7 +12,7 @@
 from __future__ import annotations
 
 import abc
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from datetime import datetime, timezone
 
 from newssent.data.cache import NewsCache, time_bucket, validate_ticker
@@ -20,17 +20,38 @@ from newssent.data.cache import NewsCache, time_bucket, validate_ticker
 
 @dataclass
 class Article:
+    """一則新聞，帶**兩個**時間戳——分清楚才知道模型是何時看得到這則消息的。
+
+    - published_at：資料源宣稱的**發布時間**（NewsAPI 的 publishedAt／yfinance 的
+      pubDate）。注意這是「發布」不是「事件發生」——事件本身可能更早，
+      有時早很多（財報是盤後公布，但財報期間是三個月）。資料源不提供事件時間，
+      這個落差無法從資料裡補回來，只能誠實承認。
+    - fetched_at：**我們抓到的時間**。這才是資訊真正進到系統的時刻，
+      線上情緒指數的可用時點由它決定，不是由 published_at 決定。
+
+    兩者的實測落差見 docs/timestamp_semantics.md（由 tools/timestamp_lag.py 產生）。
+    """
+
     title: str
     url: str
-    published_at: str  # ISO8601 字串
+    published_at: str  # ISO8601 字串；資料源宣稱的發布時間
     source: str
+    fetched_at: str | None = None  # ISO8601 字串；本系統實際取得的時間
 
     def to_dict(self) -> dict:
         return asdict(self)
 
     @classmethod
     def from_dict(cls, d: dict) -> "Article":
-        return cls(title=d["title"], url=d["url"], published_at=d["published_at"], source=d["source"])
+        # fetched_at 用 .get()：2026-08 之前寫入的快取沒有這個欄位，
+        # 舊快取必須照樣讀得起來（降級退回舊快取是既有的可用性設計）
+        return cls(
+            title=d["title"],
+            url=d["url"],
+            published_at=d["published_at"],
+            source=d["source"],
+            fetched_at=d.get("fetched_at"),
+        )
 
 
 class NewsResult:
@@ -71,7 +92,11 @@ class CachedNewsProvider(NewsProvider):
             return NewsResult([Article.from_dict(a) for a in cached], stale=False)
 
         try:
-            articles = self._fetch(ticker, limit)
+            # 抓取時間統一在這裡蓋章，不交給各子類別——兩個來源才不會各記各的
+            articles = [
+                replace(a, fetched_at=datetime.now(timezone.utc).isoformat(timespec="seconds"))
+                for a in self._fetch(ticker, limit)
+            ]
         except Exception as exc:
             fallback = self._cache.read_latest(ticker)
             if fallback is not None:
