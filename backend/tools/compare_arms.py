@@ -271,12 +271,22 @@ def decision_lines(results: dict[str, dict]) -> list[str]:
     return lines
 
 
-def write_report(rows: list[dict], results: dict[str, dict], llm_notes: list[str]) -> None:
+def write_report(
+    rows: list[dict],
+    results: dict[str, dict],
+    llm_notes: list[str],
+    out_path: Path = REPORT_MD,
+) -> None:
+    # 樣本描述由實際讀進來的批次推導，不寫死——確認實驗跑的是新批，
+    # 若沿用「07-17 批 + 08-05 批」這句話，報告開頭就會是假的。
+    batches = sorted({row["batch"] for row in rows})
+    batch_desc = "、".join(batches)
+
     lines = [
         "# 實驗 #6：情緒任務定義的修正（語氣 → 對該標的的方向）",
         "",
         f"產出日：{date.today().isoformat()}；驗收樣本 **{len(rows)} 則線上英文財經新聞標題**"
-        "（07-17 批 30 則 + 08-05 批 30 則，皆經財金組人工複核）。",
+        f"（批次：{batch_desc}；皆經財金組人工複核）。",
         "",
         "## 問題",
         "",
@@ -353,8 +363,8 @@ def write_report(rows: list[dict], results: dict[str, dict], llm_notes: list[str
         "> 由 `python tools/compare_arms.py` 產生。",
         "",
     ]
-    REPORT_MD.write_text("\n".join(lines), encoding="utf-8")
-    print(f"報告已寫入 {REPORT_MD}")
+    out_path.write_text("\n".join(lines), encoding="utf-8")
+    print(f"報告已寫入 {out_path}")
 
 
 def main() -> int:
@@ -366,6 +376,12 @@ def main() -> int:
         nargs="+",
         default=None,
         help="指定樣本 CSV（預設讀既有兩批）；確認實驗應只指定新批，不與舊批混算",
+    )
+    parser.add_argument(
+        "--out",
+        default=None,
+        help="報告輸出路徑（預設覆寫實驗 #6 報告）。**確認實驗務必另指定**——"
+        "跑新批卻寫回同一個檔，會把 #6 的原始記錄蓋掉。",
     )
     args = parser.parse_args()
 
@@ -418,7 +434,7 @@ def main() -> int:
             f"負面召回 {neg['recall']:.1%}  過度給方向 {res['over_direction']:.1%}{mc}"
         )
 
-    write_report(rows, results, llm_notes)
+    write_report(rows, results, llm_notes, Path(args.out) if args.out else REPORT_MD)
     return 0
 
 
