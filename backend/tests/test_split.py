@@ -1,4 +1,11 @@
+import pytest
+
 from newssent.ml.dataset import dedup_indices, prepare_split, stratified_split
+
+# 與 test_label_shuffle.py 同屬洩漏防治的把關，一起進 pre-push 閘門。
+# 兩者互補：打亂標籤測試抓「同一段文字跨集」，這裡抓「同一則標題的多個實體跨集」——
+# 後者兩列文字不同、假標籤各自獨立，打亂標籤測試對它是盲的。
+pytestmark = pytest.mark.leakage
 
 
 def _make_data(n_per_label=100):

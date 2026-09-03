@@ -38,3 +38,6 @@ include = ["newssent*"]
 [tool.pytest.ini_options]
 # 部分機器全域 %TEMP%\pytest-of-<user> 有殘留資料夾權限被鎖住，改用專案內暫存目錄避開
 addopts = "--basetemp=.pytest_tmp"
+markers = [
+    "leakage: 資料洩漏回歸測試（pytest -m leakage；pre-push hook 以此為閘門）",
+]
