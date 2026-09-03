@@ -6,6 +6,14 @@
 > fine-tuned **BERT**（測試 Macro F1 **0.8458**，基線 0.7286），FastAPI 真實推論、
 > yfinance 即時新聞源（含快取降級）、Next.js 監控儀表板、線上抽測與完整文件。
 
+> **現行 production 模型為 `bert-combined`**（2026-08-14 起）。財金組獨立複核揭露
+> 「抓不到負面、過度給方向」後，診斷為**任務定義錯誤**——量的是句子語氣，
+> 該量的是「這則標題對**這支股票**是好消息還是壞消息」，故改以
+> PhraseBank＋SEntFiN 合併語料重訓目標導向模型（[實驗 #6](docs/experiment_target_sentiment.md)）。
+> 換模型的理由是任務定義，**不是分數**——#6 那 15 個百分點在 2026-09-03 的
+> [確認實驗](docs/confirmation_2026-09-03.md)中**沒有複製出來**，我們照事先寫死的
+> 預先聲明記為一次失敗的確認。引用本專案任何一致率數字時，請一併看那份確認結果。
+
 ## 系統概觀
 
 ```
@@ -22,7 +30,7 @@
 
 | 層 | 技術 |
 |---|---|
-| 訓練資料 | Financial PhraseBank（sentences_50agree，4,846 筆標注句） |
+| 訓練資料 | Financial PhraseBank（sentences_50agree，4,846 筆標注句）＋ SEntFiN 1.0（10,753 則標題，實體層級標注）|
 | 即時新聞 | yfinance news（主源，免金鑰）、NewsAPI（`config.NEWS_PROVIDER` 一行切換） |
 | 基線模型 | TF-IDF + Logistic Regression、TF-IDF + SVM |
 | 深度模型 | DistilBERT / BERT / RoBERTa fine-tuning（PyTorch CUDA + Hugging Face） |
@@ -43,8 +51,9 @@ backend/
     api/            # FastAPI routers、schemas、錯誤契約
   artifacts/        # 模型權重與 metadata.json（權重 gitignore）
   data/             # 資料集原始檔與切分索引
-  tools/            # spot_check.py：線上標題人工抽測
-  tests/            # pytest 51 項（FakeProvider，不打網路）
+  tools/            # spot_check.py（抽測取樣/盲標表）、compare_arms.py（方案對照＋McNemar）、
+                    # contamination_check.py（預訓練污染）、timestamp_lag.py（時間戳落差）
+  tests/            # pytest 81 項（FakeProvider，不打網路；含 pytest -m leakage 洩漏防治 18 項）
 frontend/
   app/              # Next.js 主頁（stale 徽章、as_of、免責聲明）
   components/       # SentimentGauge、KeywordCloud、NewsList、TickerSearch
@@ -66,6 +75,19 @@ docs/               # 架構圖、模型比較/選型、實驗設計、線上抽
 | 7 | G | 端對端驗證 + [30 則線上抽測](docs/online_spot_check.md) | ✅ |
 | 8 | H | 技術文件（[架構](docs/architecture.md)、[實驗設計](docs/experiment_design.md)、[模型比較](docs/model_comparison.md)） | ✅ |
 
+### 第二輪（2026-08~09）任務定義修正與確認實驗
+
+| 主題 | 結果 |
+|---|---|
+| 財金組獨立盲標複核（3 批共 120 則） | 揭露「抓不到負面、過度給方向」；**AI 自標 66.7% vs 人工 46.7%**，證實自己標自己的考卷會高估 |
+| 實驗 #6：語氣 → 對該標的的方向 | 一致率 46.7%→61.7%（**候選結論**）；production 改 `bert-combined` |
+| **預先聲明 + 確認實驗** | 新批 60 則盲標：60.0% vs 63.3%，**p=0.804，H1 未獲確認**——15pp 沒有複製，誠實記為失敗 |
+| 資料誠信（洩漏／污染／時間戳） | 打亂標籤測試、735 則線上標題 0 近重複、發布→抓取落差中位數 2.94 小時 |
+
+> 確認實驗失敗後 production **維持** `bert-combined`：兩者統計上無法區分，
+> 用無法區分的差距換模型等於拿噪音當決策依據；當初換模型的理由是任務定義而非分數。
+> 但**不再宣稱一致率提升**。
+
 ## 啟動方式
 
 ```powershell
@@ -75,7 +97,9 @@ python -m venv .venv
 .venv\Scripts\activate
 pip install torch --index-url https://download.pytorch.org/whl/cu128   # NVIDIA GPU
 pip install -e ".[dev]"
-pytest                                    # 51 項測試應全部通過
+pytest                                    # 81 項測試應全部通過
+pytest -m leakage                         # 18 項洩漏防治（pre-push 閘門跑的就是這組）
+powershell -File ../scripts/install_hooks.ps1   # 安裝 pre-push 閘門（測不過不准 push）
 uvicorn newssent.api.main:app --port 8001 # 啟動 API（:8000 讓給 stock 專案）
 
 # 前端
@@ -86,16 +110,29 @@ cd frontend && npm install && npm run dev  # http://localhost:3000
 
 ```powershell
 cd backend
-python -m newssent.ml.train --model bert   # tfidf_lr|svm|distilbert|bert|roberta
+python -m newssent.ml.train --model bert --corpus combined   # 語料 phrasebank|sentfin|combined
 python -m newssent.ml.tune  --model bert   # 超參數搜尋（lr × max_length）
 python -m newssent.ml.compare              # 產出 docs/model_comparison.md
 python tools/spot_check.py sample          # 線上抽測取樣（人工標注後跑 report）
+python tools/compare_arms.py --no-llm --samples ../docs/<批次>.csv --out ../docs/<報告>.md
+python tools/contamination_check.py        # 預訓練污染分析
+python tools/timestamp_lag.py              # 發布→抓取時間落差實測
 ```
 
 新聞來源預設 **yfinance（免金鑰）**；取得 NewsAPI 金鑰後：`copy .env.example .env`
 填入 `NEWSAPI_KEY`，並把 `newssent/config.py` 的 `NEWS_PROVIDER` 改回 `"newsapi"`。
 
 環境需求：Python 3.11+、Node 18+、NVIDIA GPU（訓練用；推論 CPU 亦可，見比較表速度欄）。
+
+## 文件索引
+
+- **方法論**：[預先聲明](docs/preregistration_2026-08-14.md)（假說與裁決規則事先定死）、
+  [確認實驗結果](docs/confirmation_2026-09-03.md)（H1 未獲確認，誠實記為失敗）、
+  [預訓練污染分析](docs/pretraining_contamination.md)、[時間戳語意](docs/timestamp_semantics.md)
+- **實驗**：[實驗 #6 任務定義修正](docs/experiment_target_sentiment.md)（候選結論，含警語）、
+  [模型比較](docs/model_comparison.md)、[選型依據](docs/model_selection.md)、[實驗設計](docs/experiment_design.md)
+- **線上抽測**：[財金組複核](docs/online_spot_check.md)、[07-17 批](docs/online_spot_check_2026-07-17.md)
+- **系統**：[架構](docs/architecture.md)、[資料探索](docs/data_exploration.md)、[SEntFiN 語料](docs/data_exploration_sentfin.md)
 
 ## 團隊
 
