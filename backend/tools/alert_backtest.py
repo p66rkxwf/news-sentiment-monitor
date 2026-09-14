@@ -34,7 +34,12 @@ from newssent.config import (  # noqa: E402
     ALERT_UNIVERSE,
     FINMIND_TOKEN,
 )
-from newssent.data.finmind_news import FINMIND_API_URL, FINMIND_PROVIDER, FinMindNewsClient  # noqa: E402
+from newssent.data.finmind_news import (  # noqa: E402
+    FINMIND_API_URL,
+    FINMIND_PROVIDER,
+    FinMindError,
+    FinMindNewsClient,
+)
 from newssent.data.score_store import ScoreStore, utc_days  # noqa: E402
 from newssent.inference.alert_board import TickerAlert, assess_ticker  # noqa: E402
 from newssent.inference.alert_recorder import record  # noqa: E402
@@ -119,7 +124,11 @@ def ex_right_dates(stock_id: str) -> set[date]:
         timeout=60,
     )
     resp.raise_for_status()
-    return {date.fromisoformat(row["date"]) for row in resp.json().get("data") or []}
+    payload = resp.json()
+    # 額度用盡或 token 無效時 FinMind 仍回 HTTP 200、data 為空——不檢查就會默默不排除除權息日
+    if payload.get("status") != 200:
+        raise FinMindError(f"FinMind 除權息 {stock_id}: {payload.get('msg')}")
+    return {date.fromisoformat(row["date"]) for row in payload.get("data") or []}
 
 
 def select_events(rets, market, sessions: list[date]) -> list[Event]:
