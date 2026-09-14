@@ -22,8 +22,9 @@ backend/data/*.csv
 backend/data/*.txt
 backend/data/*.zip
 
-# 新聞快取
+# 新聞快取、情緒預警分數庫（可由 alert_recorder 重建）
 backend/news_cache.db
+backend/alert_scores.db
 
 # 環境變數 — NewsAPI 金鑰只放 .env，絕不進版控
 .env

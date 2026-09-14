@@ -4,11 +4,13 @@
 欄位名稱或型別；若需變更，視為破壞性變更並同步通知前端。
 """
 
+from datetime import date
 from typing import Literal
 
 from pydantic import BaseModel, Field
 
 SentimentLabel = Literal["negative", "neutral", "positive"]
+AlertLevelName = Literal["high", "watch", "normal", "insufficient"]
 
 
 class KeywordScore(BaseModel):
@@ -53,3 +55,53 @@ class ModelInfoResponse(BaseModel):
 class HealthResponse(BaseModel):
     status: Literal["ok"]
     model_loaded: bool
+
+
+# --- 情緒異常預警（GET /api/alerts）---
+
+
+class DailySentimentPoint(BaseModel):
+    session: date
+    score: float | None = Field(description="該交易日標題平均分數 P(正)−P(負)；null＝當日無標題")
+    article_count: int
+
+
+class AlertEvidence(BaseModel):
+    title: str
+    source: str
+    published_at: str = Field(description="發布時間（ISO8601，UTC）")
+    score: float
+
+
+class StockAlert(BaseModel):
+    ticker: str
+    name: str
+    level: AlertLevelName
+    reason: str | None = Field(default=None, description="insufficient 時說明缺什麼")
+    z_score: float | None
+    score_today: float | None = Field(description="當日情緒分數，[−1, +1]")
+    baseline_mean: float | None = Field(description="前 20 個交易日分數平均（不含當日）")
+    baseline_std: float | None
+    score_change: float | None = Field(description="當日分數 − 基準平均")
+    article_count: int
+    baseline_days: int = Field(description="基準期中有標題的交易日數")
+    recent_score: float | None = Field(description="近 5 個交易日依則數加權的分數")
+    recent: list[DailySentimentPoint]
+    evidence: list[AlertEvidence] = Field(description="當日最負面的標題（最多 3 則），供人工覆核")
+
+
+class AlertSummary(BaseModel):
+    high: int
+    watch: int
+    normal: int
+    insufficient: int = Field(description="資料不足、無法判斷的股票數（不等於正常）")
+
+
+class AlertsResponse(BaseModel):
+    as_of: date
+    window_closed: bool = Field(description="false＝該交易日尚未開盤，標題仍在累積、結果可能再變")
+    scorer: str
+    params: dict[str, float]
+    universe_size: int
+    summary: AlertSummary
+    alerts: list[StockAlert]

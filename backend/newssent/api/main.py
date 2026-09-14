@@ -10,8 +10,9 @@ from slowapi.middleware import SlowAPIMiddleware
 from slowapi.util import get_remote_address
 
 from newssent.api.errors import ApiError, api_error_handler
-from newssent.api.routers import meta, sentiment
+from newssent.api.routers import alerts, meta, sentiment
 from newssent.config import (
+    ALERT_SCORE_DB_PATH,
     ALLOWED_ORIGINS,
     NEWS_CACHE_BUCKET_SECONDS,
     NEWS_CACHE_DB_PATH,
@@ -21,6 +22,7 @@ from newssent.config import (
 )
 from newssent.data.cache import NewsCache
 from newssent.data.provider import NewsAPIProvider, YFinanceNewsProvider
+from newssent.data.score_store import ScoreStore
 from newssent.inference.analyzer import Analyzer
 from newssent.ml.registry import ArtifactContractError
 
@@ -45,6 +47,10 @@ async def lifespan(app: FastAPI):
         )
     logger.info("新聞來源：%s", NEWS_PROVIDER)
 
+    # 情緒預警只讀分數庫（由 alert_recorder 離線寫入），請求路徑上不打外部 API、不跑 LLM
+    score_store = ScoreStore(ALERT_SCORE_DB_PATH)
+    app.state.score_store = score_store
+
     try:
         app.state.analyzer = Analyzer.from_registry(PRODUCTION_MODEL)
         logger.info("已載入模型 %s", app.state.analyzer.version)
@@ -60,6 +66,7 @@ async def lifespan(app: FastAPI):
         yield
     finally:
         cache.close()
+        score_store.close()
 
 
 app = FastAPI(title="News Sentiment Monitor API", lifespan=lifespan)
@@ -88,3 +95,4 @@ app.add_exception_handler(RateLimitExceeded, rate_limit_handler)
 
 app.include_router(meta.router)
 app.include_router(sentiment.router)
+app.include_router(alerts.router)
