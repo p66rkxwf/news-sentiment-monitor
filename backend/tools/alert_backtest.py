@@ -384,7 +384,12 @@ def main() -> None:
     args = parser.parse_args()
 
     rets, market, sessions = load_prices()
-    events = select_events(rets, market, sessions) + NARRATIVE
+    try:
+        events = select_events(rets, market, sessions) + NARRATIVE
+    except FinMindError as exc:
+        raise SystemExit(
+            f"{exc}\n額度恢復後重跑同一指令即可，但除權息排除目前沒有逐檔快取，會從頭重算。"
+        ) from exc
     if args.cmd == "events":
         cmd_events(events, rets, market, sessions)
         return
