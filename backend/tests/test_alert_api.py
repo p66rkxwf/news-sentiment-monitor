@@ -77,3 +77,22 @@ def test_empty_store_returns_503(empty_alert_client):
     r = empty_alert_client.get("/api/alerts")
     assert r.status_code == 503
     assert r.json()["error"]["code"] == "ALERT_DATA_UNAVAILABLE"
+
+
+def test_sessions_cover_confirmed_days_and_default_as_of(alert_client):
+    r = alert_client.get("/api/alerts/sessions")
+    assert r.status_code == 200
+    body = r.json()
+    sessions = [date.fromisoformat(s) for s in body["sessions"]]
+    assert sessions == sorted(set(sessions))
+    assert set(SESSIONS) <= set(sessions)
+    assert all(s.weekday() < 5 for s in sessions)
+    # 前端拿 latest 當預設日，必須和 /api/alerts 省略 as_of 時是同一天
+    assert body["latest"] == body["sessions"][-1]
+    assert alert_client.get("/api/alerts").json()["as_of"] == body["latest"]
+
+
+def test_sessions_empty_store_returns_503(empty_alert_client):
+    r = empty_alert_client.get("/api/alerts/sessions")
+    assert r.status_code == 503
+    assert r.json()["error"]["code"] == "ALERT_DATA_UNAVAILABLE"

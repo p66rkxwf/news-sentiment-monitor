@@ -1,4 +1,5 @@
-"""GET /api/alerts：某交易日全池的情緒異常預警（預設只列 high / watch）。"""
+"""GET /api/alerts：某交易日全池的情緒異常預警（預設只列 high / watch）；
+GET /api/alerts/sessions：可查詢的交易日清單（前端切換日期用，避免猜到非交易日而收到 422）。"""
 
 from collections import Counter
 from dataclasses import asdict
@@ -9,6 +10,7 @@ from fastapi import APIRouter, Query, Request
 from newssent.api.errors import AlertDataUnavailableError, InvalidSessionError
 from newssent.api.schemas import (
     AlertEvidence,
+    AlertSessionsResponse,
     AlertsResponse,
     AlertSummary,
     DailySentimentPoint,
@@ -56,6 +58,20 @@ def _to_item(alert: TickerAlert) -> StockAlert:
     )
 
 
+def _calendar(store: ScoreStore, now: datetime) -> list[date]:
+    """已確認交易日＋推估到下一個尚未開盤的交易日；分數庫沒有交易日就無從判斷（503）。"""
+    confirmed = store.sessions()
+    if not confirmed:
+        raise AlertDataUnavailableError()
+    return extend_sessions(confirmed, now)
+
+
+@router.get("/alerts/sessions", response_model=AlertSessionsResponse)
+def get_alert_sessions(request: Request) -> AlertSessionsResponse:
+    sessions = _calendar(request.app.state.score_store, datetime.now(timezone.utc))
+    return AlertSessionsResponse(sessions=sessions, latest=sessions[-1])
+
+
 @router.get("/alerts", response_model=AlertsResponse)
 def get_alerts(
     request: Request,
@@ -65,12 +81,8 @@ def get_alerts(
     include_all: bool = Query(False, description="true 時連 normal / insufficient 也列出"),
 ) -> AlertsResponse:
     store: ScoreStore = request.app.state.score_store
-    confirmed = store.sessions()
-    if not confirmed:
-        raise AlertDataUnavailableError()
-
     now = datetime.now(timezone.utc)
-    sessions = extend_sessions(confirmed, now)
+    sessions = _calendar(store, now)
     if as_of is None:
         as_of = sessions[-1]
     elif as_of not in sessions:

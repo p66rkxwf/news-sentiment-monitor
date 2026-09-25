@@ -97,6 +97,11 @@ class AlertSummary(BaseModel):
     insufficient: int = Field(description="資料不足、無法判斷的股票數（不等於正常）")
 
 
+class AlertSessionsResponse(BaseModel):
+    sessions: list[date] = Field(description="可查詢的交易日（遞增）；末端可能含推估的未來交易日")
+    latest: date = Field(description="GET /api/alerts 省略 as_of 時採用的交易日")
+
+
 class AlertsResponse(BaseModel):
     as_of: date
     window_closed: bool = Field(description="false＝該交易日尚未開盤，標題仍在累積、結果可能再變")
