@@ -39,7 +39,7 @@
 | 深度模型 | DistilBERT / BERT / RoBERTa fine-tuning（PyTorch CUDA + Hugging Face） |
 | 台股預警 | FinMind 中文新聞（事後回補）＋ 本機 LLM `gemma3:27b` 評分，z 值對 20 日基準 |
 | 後端 | FastAPI（Python，單一 package `newssent/`） |
-| 前端 | Next.js 16 + TypeScript + Tailwind v4；分頁式 App、PWA（manifest＋圖示，無離線快取） |
+| 前端 | Next.js 16 + TypeScript + Tailwind v4；shadcn/ui（Radix、vaul）、Motion、Recharts、lucide；分頁式 App、PWA（manifest＋圖示，無離線快取） |
 | 評估指標 | Accuracy、Macro F1、推論速度（GPU/CPU 分列） |
 
 ## 目錄導覽

@@ -16,5 +16,10 @@ npm run lint
 | `DEV_ORIGINS` | dev 模式允許的區網來源（逗號分隔，例如 `192.168.1.23`） |
 | `NEXT_PUBLIC_API_BASE` | 設了就改成瀏覽器直連後端（需自行處理後端 CORS），一般不用設 |
 
-目錄：`app/` 五個分頁與 manifest、圖示；`components/` 介面元件；`lib/` API client、共用狀態、主題與格式化。
+目錄：`app/` 五個分頁與 manifest、圖示；`components/` 介面元件（`components/ui/` 是 shadcn/ui 產生的元件）；
+`lib/` API client、共用狀態、主題、格式化與動態參數（`lib/motion.ts`）。
+
+動畫分工：大量元素的進場用 `globals.css` 的 CSS keyframes（`animate-rise`／`grow-x`／`grow-y`，只動 transform／opacity）；
+Motion 只用在彈簧與版面動畫（分頁指示器、刻度標記、新聞篩選重排）。新增元件時沿用這個分工，避免主執行緒卡頓。
+用 `npx shadcn@latest add <元件>` 加 shadcn 元件；不要跑 `shadcn init`，它會覆寫 `globals.css` 的 token。
 這個 Next 版本有破壞性變更，改程式前先讀 `node_modules/next/dist/docs/`（見 [AGENTS.md](AGENTS.md)）。
