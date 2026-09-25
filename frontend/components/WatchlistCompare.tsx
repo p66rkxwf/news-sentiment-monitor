@@ -1,101 +1,71 @@
-"use client";
-
 /**
- * 多標的情緒比較（新功能）：對一組追蹤清單並行抓取情緒指數，橫向長條並列，
- * 點任一列切換主檢視。長條以 0 為中心向左（負）右（正）延伸——極性型編碼。
+ * 追蹤清單的情緒比較：每檔一列，長條以 0 為中心向左（負）右（正）延伸——極性型編碼。
+ * 資料由 app-state 抓（本次開啟只抓一次）；這裡只負責呈現。美股沒有歷史分數，故不畫走勢。
  */
 
-import { useEffect, useState } from "react";
-import { api, type SentimentLabel } from "@/lib/api";
+import type { WatchRow } from "@/lib/app-state";
+import { LABEL_TEXT, LABEL_TOKEN, signed } from "@/lib/format";
 
-const WATCHLIST = ["AAPL", "TSLA", "NVDA", "MSFT", "GOOG", "AMZN"];
-
-type Row = { ticker: string; score: number; label: SentimentLabel; count: number } | { ticker: string; error: true };
-
-const VAR: Record<SentimentLabel, string> = {
-  positive: "--pos",
-  negative: "--neg",
-  neutral: "--neu",
-};
+const TEXT = { pos: "text-pos", neu: "text-neu", neg: "text-neg" } as const;
+const BG = { pos: "bg-pos", neu: "bg-neu", neg: "bg-neg" } as const;
 
 export default function WatchlistCompare({
+  rows,
   selected,
   onSelect,
 }: {
-  selected: string;
-  onSelect: (t: string) => void;
+  rows: WatchRow[];
+  selected: string | null;
+  onSelect: (ticker: string) => void;
 }) {
-  const [rows, setRows] = useState<Row[] | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    Promise.all(
-      WATCHLIST.map((t) =>
-        api
-          .sentiment(t)
-          .then((s) => ({ ticker: t, score: s.score, label: s.label, count: s.article_count }))
-          .catch(() => ({ ticker: t, error: true as const })),
-      ),
-    ).then((r) => {
-      if (!cancelled) setRows(r);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
   return (
-    <div>
-      {rows === null ? (
-        <p className="py-6 text-center text-sm text-ink-3">載入追蹤清單…</p>
-      ) : (
-        <ul className="space-y-1">
-          {rows.map((row) => {
-            const active = row.ticker === selected;
-            return (
-              <li key={row.ticker}>
-                <button
-                  type="button"
-                  onClick={() => onSelect(row.ticker)}
-                  className="flex w-full items-center gap-3 rounded-lg px-2 py-1.5 text-left transition hover:bg-surface-2"
-                  style={active ? { background: "var(--accent-soft)" } : undefined}
-                >
-                  <span className={`w-14 shrink-0 text-sm font-semibold ${active ? "text-accent" : "text-ink"}`}>
-                    {row.ticker}
+    <ul className="divide-y divide-border">
+      {rows.map(({ ticker, sentiment }) => {
+        const active = ticker === selected;
+        return (
+          <li key={ticker}>
+            <button
+              type="button"
+              onClick={() => onSelect(ticker)}
+              aria-current={active ? "true" : undefined}
+              className="grid min-h-16 w-full grid-cols-[5rem_minmax(0,1fr)_4.5rem] items-center gap-4 py-2 text-left"
+            >
+              <span>
+                <span className={`block font-mono text-body font-semibold ${active ? "text-accent" : "text-ink"}`}>
+                  {ticker}
+                </span>
+                <span className="block text-meta text-ink-3">
+                  {sentiment ? `${sentiment.article_count} 則新聞` : active ? "目前檢視" : " "}
+                </span>
+              </span>
+
+              {sentiment ? (
+                <>
+                  <span className="relative h-4" aria-hidden="true">
+                    <span className="absolute left-1/2 top-0 h-full w-px bg-border" />
+                    <span
+                      className={`absolute top-1/2 h-2 -translate-y-1/2 rounded-full ${BG[LABEL_TOKEN[sentiment.label]]}`}
+                      style={{
+                        width: `${(Math.min(1, Math.abs(sentiment.score)) / 2) * 100}%`,
+                        left: sentiment.score >= 0 ? "50%" : undefined,
+                        right: sentiment.score < 0 ? "50%" : undefined,
+                      }}
+                    />
                   </span>
-                  {"error" in row ? (
-                    <span className="flex-1 text-xs text-ink-3">無資料</span>
-                  ) : (
-                    <>
-                      {/* 中心線兩側的極性長條 */}
-                      <div className="relative h-4 flex-1">
-                        <div className="absolute left-1/2 top-0 h-full w-px bg-border" />
-                        <div
-                          className="absolute top-1/2 h-2.5 -translate-y-1/2 rounded-sm"
-                          style={{
-                            background: `var(${VAR[row.label]})`,
-                            width: `${(Math.abs(row.score) / 2) * 100}%`,
-                            left: row.score >= 0 ? "50%" : undefined,
-                            right: row.score < 0 ? "50%" : undefined,
-                          }}
-                        />
-                      </div>
-                      <span
-                        className="w-12 shrink-0 text-right text-xs font-semibold tabular-nums"
-                        style={{ color: `var(${VAR[row.label]})` }}
-                      >
-                        {row.score >= 0 ? "+" : ""}
-                        {row.score.toFixed(2)}
-                      </span>
-                    </>
-                  )}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-      <p className="mt-2 text-[10px] text-ink-3">長條以 0 為中心，向右正面、向左負面；點選切換主檢視。</p>
-    </div>
+                  <span className="text-right">
+                    <span className={`block font-mono text-body font-semibold tabular-nums ${TEXT[LABEL_TOKEN[sentiment.label]]}`}>
+                      {signed(sentiment.score)}
+                    </span>
+                    <span className="block text-meta text-ink-3">{LABEL_TEXT[sentiment.label]}</span>
+                  </span>
+                </>
+              ) : (
+                <span className="col-span-2 text-meta text-ink-3">這檔目前抓不到資料，稍後重新整理。</span>
+              )}
+            </button>
+          </li>
+        );
+      })}
+    </ul>
   );
 }

@@ -1,75 +1,59 @@
 @import "tailwindcss";
 
-/* ── 設計 token：介面語言的單一事實來源 ───────────────────────────
-   sentiment 三色沿用美股慣例（正面綠／負面紅／中性灰），為狀態型配色，
-   每處均搭配文字標籤，不以顏色單獨承載語意。 */
+/* ── 設計 token（行情板）───────────────────────────────────────────
+   預設深色：夜盤藍底、鋼藍主色。綠／紅／灰只表示新聞情緒（美股慣例：正綠負紅），
+   琥珀只表示預警的 watch 等級。每處顏色都搭配文字，不以顏色單獨承載語意。
+   字級只有四階（meta 12 / body 15 / title 20 / hero 44），字重只有 400 / 600。 */
 :root {
-  --background: #f7f8fa;
-  --surface: #ffffff;
-  --surface-2: #f1f3f6;
-  --border: #e3e7ed;
-  --ink: #101725;
-  --ink-2: #475069;
-  --ink-3: #8b93a4;
+  --background: #0d1520;
+  --surface: #131d2a;
+  --surface-2: #1a2635;
+  --border: #223044;
+  --ink: #e6edf5;
+  --ink-2: #a3b3c6;
+  --ink-3: #7a8ca3;
 
-  --accent: #4f46e5;
-  --accent-fg: #ffffff;
-  --accent-soft: #eef0fe;
+  --accent: #5aa9e6;
+  --accent-fg: #0d1520;
+  --accent-soft: rgba(90, 169, 230, 0.13);
 
-  --pos: #15803d;
-  --pos-soft: #e7f6ec;
-  --neu: #64748b;
-  --neu-soft: #eef1f5;
-  --neg: #dc2626;
-  --neg-soft: #fdeaea;
+  --pos: #3fcf8e;
+  --pos-soft: rgba(63, 207, 142, 0.14);
+  --neu: #8a9aae;
+  --neu-soft: rgba(138, 154, 174, 0.14);
+  --neg: #f2555a;
+  --neg-soft: rgba(242, 85, 90, 0.14);
+  --warn: #e8a33d;
+  --warn-soft: rgba(232, 163, 61, 0.14);
 
-  --shadow-sm: 0 1px 2px rgba(16, 23, 37, 0.06), 0 1px 3px rgba(16, 23, 37, 0.04);
-  --shadow-md: 0 4px 12px rgba(16, 23, 37, 0.08), 0 2px 4px rgba(16, 23, 37, 0.04);
+  --shadow-float: 0 12px 32px rgba(3, 8, 15, 0.55);
+  color-scheme: dark;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0d14;
-    --surface: #131824;
-    --surface-2: #1b2130;
-    --border: #262d3d;
-    --ink: #eef1f6;
-    --ink-2: #a8b1c4;
-    --ink-3: #6b7488;
-
-    --accent: #818cf8;
-    --accent-fg: #0a0d14;
-    --accent-soft: #1e2542;
-
-    --pos: #4ade80;
-    --pos-soft: #12321f;
-    --neu: #94a3b8;
-    --neu-soft: #202634;
-    --neg: #f87171;
-    --neg-soft: #35191b;
-
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
-  }
-}
-
-/* 手動主題覆蓋（layout 的切換鈕蓋上 data-theme，需勝過系統偏好） */
-:root[data-theme="dark"] {
-  --background: #0a0d14; --surface: #131824; --surface-2: #1b2130; --border: #262d3d;
-  --ink: #eef1f6; --ink-2: #a8b1c4; --ink-3: #6b7488;
-  --accent: #818cf8; --accent-fg: #0a0d14; --accent-soft: #1e2542;
-  --pos: #4ade80; --pos-soft: #12321f; --neu: #94a3b8; --neu-soft: #202634;
-  --neg: #f87171; --neg-soft: #35191b;
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3); --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
-}
 :root[data-theme="light"] {
-  --background: #f7f8fa; --surface: #ffffff; --surface-2: #f1f3f6; --border: #e3e7ed;
-  --ink: #101725; --ink-2: #475069; --ink-3: #8b93a4;
-  --accent: #4f46e5; --accent-fg: #ffffff; --accent-soft: #eef0fe;
-  --pos: #15803d; --pos-soft: #e7f6ec; --neu: #64748b; --neu-soft: #eef1f5;
-  --neg: #dc2626; --neg-soft: #fdeaea;
-  --shadow-sm: 0 1px 2px rgba(16,23,37,0.06),0 1px 3px rgba(16,23,37,0.04);
-  --shadow-md: 0 4px 12px rgba(16,23,37,0.08),0 2px 4px rgba(16,23,37,0.04);
+  --background: #f3f6f9;
+  --surface: #ffffff;
+  --surface-2: #e7edf3;
+  --border: #d3dde8;
+  --ink: #0e1a26;
+  --ink-2: #3f5266;
+  --ink-3: #5f7186;
+
+  --accent: #1f6fb2;
+  --accent-fg: #ffffff;
+  --accent-soft: rgba(31, 111, 178, 0.1);
+
+  --pos: #0f8a4f;
+  --pos-soft: rgba(15, 138, 79, 0.1);
+  --neu: #5e6e80;
+  --neu-soft: rgba(94, 110, 128, 0.1);
+  --neg: #d0343a;
+  --neg-soft: rgba(208, 52, 58, 0.1);
+  --warn: #9a6212;
+  --warn-soft: rgba(154, 98, 18, 0.12);
+
+  --shadow-float: 0 12px 32px rgba(14, 26, 38, 0.16);
+  color-scheme: light;
 }
 
 @theme inline {
@@ -89,18 +73,63 @@
   --color-neu-soft: var(--neu-soft);
   --color-neg: var(--neg);
   --color-neg-soft: var(--neg-soft);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+
+  --font-sans: var(--font-plex-sans), "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "Cascadia Mono", monospace;
+
+  --text-meta: 0.75rem;
+  --text-meta--line-height: 1.4;
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.55;
+  --text-title: 1.25rem;
+  --text-title--line-height: 1.3;
+  --text-hero: 2.75rem;
+  --text-hero--line-height: 1;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   background: var(--background);
   color: var(--ink);
-  font-family: var(--font-geist-sans), system-ui, "Noto Sans TC", sans-serif;
+  font-family: var(--font-sans);
+  -webkit-tap-highlight-color: transparent;
 }
 
-@keyframes fadeup {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: none; }
+/* 放在 base layer：未分層的樣式會壓過 Tailwind utility，元件就無法用 focus-visible:* 改寫 */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
 }
-.animate-fadeup { animation: fadeup 0.35s ease both; }
+
+/* iOS 主畫面全螢幕時，狀態列區域（black-translucent）一律畫成深色，淺色主題下狀態列文字才看得見 */
+.statusbar-guard {
+  height: env(safe-area-inset-top);
+  background: #0d1520;
+}
+
+.pb-nav {
+  padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 64rem) {
+  .pb-nav {
+    padding-bottom: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

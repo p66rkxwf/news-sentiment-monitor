@@ -1,58 +1,43 @@
 /**
- * 情緒分佈條：把近期新聞逐則的情緒標籤匯總成一條分段長條。
- * 狀態型配色（正綠/中灰/負紅），每段附文字與則數，段間留 2px surface 間隙。
+ * 情緒分佈：逐則標籤匯總成一條分段長條＋三欄數字。數字比標籤大（值才是重點）。
  */
 
-import type { NewsItem } from "@/lib/api";
+import type { NewsItem, SentimentLabel } from "@/lib/api";
+import { LABEL_TEXT, percent } from "@/lib/format";
 
-type Seg = { key: "positive" | "neutral" | "negative"; text: string; varName: string };
-const SEGS: Seg[] = [
-  { key: "positive", text: "正面", varName: "--pos" },
-  { key: "neutral", text: "中性", varName: "--neu" },
-  { key: "negative", text: "負面", varName: "--neg" },
+const SEGS: { key: SentimentLabel; bg: string; text: string }[] = [
+  { key: "positive", bg: "bg-pos", text: "text-pos" },
+  { key: "neutral", bg: "bg-neu", text: "text-neu" },
+  { key: "negative", bg: "bg-neg", text: "text-neg" },
 ];
 
 export default function SentimentDistribution({ articles }: { articles: NewsItem[] }) {
   const total = articles.length;
-  const counts = {
-    positive: articles.filter((a) => a.sentiment === "positive").length,
-    neutral: articles.filter((a) => a.sentiment === "neutral").length,
-    negative: articles.filter((a) => a.sentiment === "negative").length,
-  };
-
   if (total === 0) {
-    return <p className="text-sm text-ink-3">目前沒有可統計的新聞。</p>;
+    return <p className="text-body text-ink-3">這段期間沒有可統計的新聞。</p>;
   }
+  const count = (k: SentimentLabel) => articles.filter((a) => a.sentiment === k).length;
 
   return (
     <div>
-      <div className="flex h-7 w-full gap-0.5 overflow-hidden rounded-lg">
+      <div className="flex h-2 gap-0.5 overflow-hidden rounded-full" aria-hidden="true">
         {SEGS.map((s) => {
-          const c = counts[s.key];
-          if (c === 0) return null;
-          const pct = (c / total) * 100;
+          const c = count(s.key);
+          return c > 0 ? <div key={s.key} className={s.bg} style={{ width: `${(c / total) * 100}%` }} /> : null;
+        })}
+      </div>
+      <dl className="mt-4 grid grid-cols-3 gap-4">
+        {SEGS.map((s) => {
+          const c = count(s.key);
           return (
-            <div
-              key={s.key}
-              className="flex items-center justify-center text-[11px] font-semibold text-white transition-all"
-              style={{ width: `${pct}%`, background: `var(${s.varName})`, minWidth: c > 0 ? "28px" : 0 }}
-              title={`${s.text} ${c} 則（${pct.toFixed(0)}%）`}
-            >
-              {pct >= 12 ? c : ""}
+            <div key={s.key}>
+              <dt className="text-meta text-ink-3">{LABEL_TEXT[s.key]}</dt>
+              <dd className={`font-mono text-title font-semibold tabular-nums ${s.text}`}>{c}</dd>
+              <dd className="font-mono text-meta tabular-nums text-ink-3">{percent(c / total)}</dd>
             </div>
           );
         })}
-      </div>
-      <div className="mt-2.5 flex flex-wrap gap-x-4 gap-y-1">
-        {SEGS.map((s) => (
-          <div key={s.key} className="flex items-center gap-1.5 text-xs text-ink-2">
-            <span className="h-2.5 w-2.5 rounded-sm" style={{ background: `var(${s.varName})` }} />
-            <span>{s.text}</span>
-            <span className="font-semibold tabular-nums text-ink">{counts[s.key]}</span>
-            <span className="text-ink-3">({total ? Math.round((counts[s.key] / total) * 100) : 0}%)</span>
-          </div>
-        ))}
-      </div>
+      </dl>
     </div>
   );
 }
