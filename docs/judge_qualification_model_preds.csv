@@ -1,0 +1,121 @@
+﻿ticker,title,artifact,trained_commit,model_label
+AAPL,Apple is suing OpenAI over alleged trade secret theft,bert-combined,814f2d9,negative
+AAPL,How SK Hynix picked the 'perfect time' to list in the US,bert-combined,814f2d9,neutral
+AAPL,What to expect this earnings season amid lingering Hindenburg Omens,bert-combined,814f2d9,neutral
+AAPL,"The 2 Magnificent Seven Stocks With the Most Upside Potential, According to Wall Street",bert-combined,814f2d9,positive
+AAPL,Apple sues OpenAI alleging trade secret theft,bert-combined,814f2d9,neutral
+AAPL,Has Meta ever had a stock split? What sets this ‘Mag 7’ stock apart,bert-combined,814f2d9,neutral
+TSLA,SK Hynix ETFs Are Coming. Exactly Who Should Own Them.,bert-combined,814f2d9,neutral
+TSLA,"If You Have $1,000 to Invest in EV Stocks, Should It Go to Tesla or Rivian?",bert-combined,814f2d9,neutral
+TSLA,Tesla Reportedly Pushes Staff Toward Grok 4.5 As AI Spending Cap Takes Effect,bert-combined,814f2d9,positive
+TSLA,Review & Preview: Why the Dow Snapped Its Streak,bert-combined,814f2d9,neutral
+TSLA,"Waymo, Tesla must fix a dangerous issue with their robotaxis, NHTSA says",bert-combined,814f2d9,neutral
+TSLA,Tesla Tears Down Model S/X Line In Just 46 Days For Optimus Production,bert-combined,814f2d9,neutral
+NVDA,"Stock market today: Dow, S&P 500, Nasdaq rise to cap choppy week as SK Hynix pops in US debut",bert-combined,814f2d9,positive
+NVDA,Chip stocks regain some ground after whipsaw of a trading week,bert-combined,814f2d9,positive
+NVDA,Why you should care about SK Hynix's IPO,bert-combined,814f2d9,neutral
+NVDA,Shares of Intel and AMD Have Plummeted in the Last Few Days. Is It Time to Panic?,bert-combined,814f2d9,negative
+NVDA,This Overlooked Investment Could Set You Up for Life. Here's How.,bert-combined,814f2d9,neutral
+NVDA,Micron CEO Sanjay Mehrotra Announces $250 Billion Investment for Expanded Artificial Intelligence (AI) Memory Chip Development,bert-combined,814f2d9,neutral
+MSFT,PC shipments fall as AI demand spikes memory prices,bert-combined,814f2d9,negative
+MSFT,Advanced Micro Devices vs. Texas Instruments: Which Technology Stock Is a Better Buy in 2026?,bert-combined,814f2d9,neutral
+MSFT,Arista Networks (ANET) Could Be 2% Undervalued Following Its AI Switching Push,bert-combined,814f2d9,positive
+MSFT,Why tech investors are reevaluating AI investments,bert-combined,814f2d9,neutral
+MSFT,"I’d Put $25,000 in These 2 ETFs Before the Next Earnings Season",bert-combined,814f2d9,neutral
+MSFT,"Amazon, Microsoft and Meta Among HSBC Earnings Picks",bert-combined,814f2d9,positive
+GOOG,What Meta's Muse AI image tool means for Instagram privacy,bert-combined,814f2d9,neutral
+GOOG,Why Microsoft is not this portfolio manager's stock pick,bert-combined,814f2d9,neutral
+GOOG,You Didn’t Need Alphabet: XLK Returned 29.35% to GOOGL’s 14.26%,bert-combined,814f2d9,neutral
+GOOG,UK Brings Amazon Web Services Under Direct Financial Oversight,bert-combined,814f2d9,neutral
+GOOG,IBM's Quantum Upside Meets Valuation Risk,bert-combined,814f2d9,neutral
+GOOG,AI Giants Add $350 Billion Debt as $725 Billion Spending Surges,bert-combined,814f2d9,positive
+AAPL,AI CapEx fears: Is big tech overspending?,bert-combined,814f2d9,negative
+AAPL,The 9th Circuit’s Browser Analogy Leaves a Liability Vacuum,bert-combined,814f2d9,neutral
+AAPL,Departing Apple CEO Tim Cook Just Gave Memory Stocks Good News,bert-combined,814f2d9,neutral
+AAPL,Apple's Buyback Is Retiring Less Stock Just As The Memory Bill Grows,bert-combined,814f2d9,negative
+AAPL,Apple’s purchase commitments jump 28%; BofA sees iPhone ramp ahead,bert-combined,814f2d9,positive
+AAPL,Apple's Quarterly iPhone Sales Were Even Better Than They Seem,bert-combined,814f2d9,positive
+TSLA,"Base Power CEO on $1B funding, AI's soaring energy demand, and taking on Tesla",bert-combined,814f2d9,neutral
+TSLA,Elon Musk's Tesla and SpaceX Have Shed $1.19 Trillion in Value Since June. Is This a Buying Opportunity?,bert-combined,814f2d9,positive
+TSLA,Tesla vs BYD: Only One Leader in The EV Race,bert-combined,814f2d9,neutral
+TSLA,"Tesla and SpaceX Are Secretly Merging—Not on Paper, But in AI Power",bert-combined,814f2d9,neutral
+TSLA,AMD falls after Musk says SpaceX will exclusively use Nvidia AI chips,bert-combined,814f2d9,neutral
+TSLA,"S&P 500, Dow at record highs as Mideast hopes offset SpaceX, AMD drag",bert-combined,814f2d9,positive
+NVDA,"Tech stocks today: SpaceX, AMD top quarterly results, but fail to impress Wall Street. Shares sink",bert-combined,814f2d9,negative
+NVDA,SpaceX stock declines post-earnings. Are investors worried about AI spending?,bert-combined,814f2d9,negative
+NVDA,'This was not an exceptional result': Strategist talks AMD earnings & 'shocking' capex,bert-combined,814f2d9,neutral
+NVDA,"Marvell, Sandisk, SK Hynix lead semiconductor stock rally as S&P 500 trades at record highs",bert-combined,814f2d9,positive
+NVDA,Pivotal Q2 Profits Show Stellantis Ready to Drive Turnaround. Time to Buy the Stock?,bert-combined,814f2d9,neutral
+NVDA,"5 Stocks Ready to Pay You a Dividend in August, but You Must Buy Them Today",bert-combined,814f2d9,neutral
+MSFT,SpaceX Has Already Lost AI Race,bert-combined,814f2d9,negative
+MSFT,Why Bill Ackman Poured $2 Billion Into a Stock His Peers Were Fleeing,bert-combined,814f2d9,neutral
+MSFT,Arista Networks Stock Surges as Earnings Prove AI Demand Is Real,bert-combined,814f2d9,positive
+MSFT,Who Might Buy Snap If Its Founders Ever Decide to Sell,bert-combined,814f2d9,neutral
+MSFT,Microsoft Extends Winning Streak Amid Earnings Surge; Is The Stock A Buy Now?,bert-combined,814f2d9,positive
+MSFT,"Canada's Shopify forecasts revenue above estimates, shares surge",bert-combined,814f2d9,positive
+GOOG,Booking vs. Carvana: Which Consumer Stock Is a Better Buy in 2026?,bert-combined,814f2d9,neutral
+GOOG,Anthropic is hiring an AI chip design team,bert-combined,814f2d9,neutral
+GOOG,Blackstone pitches $36 billion debt deal for Anthropic AI chips,bert-combined,814f2d9,neutral
+GOOG,Wall Street Bulls Look Optimistic About Alphabet (GOOGL): Should You Buy?,bert-combined,814f2d9,positive
+GOOG,DoorDash Gets FAA Green Light for Commercial Drone Deliveries,bert-combined,814f2d9,positive
+GOOG,Self-driving Ubers to be launched in London within weeks,bert-combined,814f2d9,neutral
+AAPL,Google’s Pixel 11 isn’t the story; Gemini AI is,bert-combined,814f2d9,neutral
+AAPL,Google makes costly bet Apple proved can work,bert-combined,814f2d9,negative
+AAPL,Apple Makes Big iPhone Move in AI Race,bert-combined,814f2d9,neutral
+AAPL,The Lowest-Beta Mega-Cap Just Got a $358 Target,bert-combined,814f2d9,neutral
+AAPL,"Your TV's Home Screen Is New Gatekeeper, And Advertisers Better Get Used To It",bert-combined,814f2d9,neutral
+AAPL,"Gary Black Says Tesla Needs to Work on Branding: ‘Without Great Marketing, Apple Would Not Be a $4.4T Market Cap Company’",bert-combined,814f2d9,neutral
+TSLA,Tesla paid Elon Musk 2.5m times more as CEO than its average worker in 2025,bert-combined,814f2d9,neutral
+TSLA,"New Study Reveals Strongest State Economies, Only 1 State Was Better Than Texas",bert-combined,814f2d9,positive
+TSLA,More Analysts Say Hold Than Buy on Tesla. The Price Target Went Up Anyway.,bert-combined,814f2d9,positive
+TSLA,"Elon Musk, the World’s Most Famous EV Pioneer, Is Now Leaning Into Fossil Fuels",bert-combined,814f2d9,neutral
+TSLA,Tesla Is Down 26% in 2026 and Trailing Every Magnificent Seven Peer. Here's What Could Turn It Around.,bert-combined,814f2d9,negative
+TSLA,Why Tesla Stock Is Struggling—and What Could Revive It,bert-combined,814f2d9,neutral
+NVDA,Nvidia bulls may have a small problem on their hands,bert-combined,814f2d9,negative
+NVDA,Can Nvidia’s circular financing keep fueling the market rally?,bert-combined,814f2d9,neutral
+NVDA,"Is Bloom Energy a Buy, Hold, or Sell After Its 1,920% Run?",bert-combined,814f2d9,neutral
+NVDA,SpaceX vs. MP Materials: 2 Very Different Ways to Bet on the Next Decade of Tech,bert-combined,814f2d9,neutral
+NVDA,Rocket Lab Just Did This After Its Q2 Earnings Report. Here's What It Means For The Stock.,bert-combined,814f2d9,neutral
+NVDA,Top AI Reporter: NVIDIA’s $500 Billion AI Compute Deal “Isn’t Even Enough” According to Some Investors,bert-combined,814f2d9,neutral
+MSFT,Why this analyst sees another 30% rip in Microsoft stock,bert-combined,814f2d9,negative
+MSFT,Wells Fargo resets Microsoft stock price target for 2026,bert-combined,814f2d9,neutral
+MSFT,Microsoft (MSFT) Is Pulling Back From China. Should Investors Worry?,bert-combined,814f2d9,neutral
+MSFT,"Microsoft Slashes Carbon Removal Purchases By 80% As AI Boom Drives Emissions Higher, Says Report — MSFT Stock Edges Lower",bert-combined,814f2d9,negative
+MSFT,SK Group's Chairman Isn't Worried About Nvidia Dependence: Is That Why SKHY Is Up 8%?,bert-combined,814f2d9,positive
+MSFT,Amazon’s Price Target Says +32% and Not a Single Analyst Says Sell,bert-combined,814f2d9,neutral
+GOOG,Google becomes latest company to raise prices thanks to memory shortage,bert-combined,814f2d9,positive
+GOOG,OpenAI replaces Chief Revenue Officer Denise Dresser,bert-combined,814f2d9,neutral
+GOOG,"Google unveils Gemini 3.7 Flash AI model for coding, agent workflows",bert-combined,814f2d9,neutral
+GOOG,Google Debuts New Gemini Flash While Top AI Model Still Delayed,bert-combined,814f2d9,neutral
+GOOG,OpenAI replaces revenue lead as Greg Brockman builds his presence,bert-combined,814f2d9,neutral
+GOOG,The Numbers Get Larger and Larger: Inside the AI Financing Scramble,bert-combined,814f2d9,negative
+AMZN,Costco Is Priced Like The Best Of Its Group. Is It?,bert-combined,814f2d9,neutral
+AMZN,Why Amazon Stock Is Down Today,bert-combined,814f2d9,negative
+AMZN,Porter Stansberry Brings Jeff Bezos’ 2004 Transportation Machine Analogy Into CRWV Debate — Michael Burry Weighs In,bert-combined,814f2d9,neutral
+AMZN,"Prediction: MercadoLibre Will Join Amazon, Walmart, and Costco in the $100 Billion Revenue Club by 2029",bert-combined,814f2d9,positive
+AMZN,Bill Ackman Invests in Netflix and Visa in a Tough Year for His Pershing Square Funds,bert-combined,814f2d9,negative
+AMZN,Jeff Bezos takes bold new turn amid $4B Amazon sell-off,bert-combined,814f2d9,neutral
+META,Tech stocks today: Anthropic investors aiming for $2 trillion IPO,bert-combined,814f2d9,neutral
+META,Alberta’s AI data centre gamble: Big investment or local burden?,bert-combined,814f2d9,neutral
+META,"Meta Remains a Deeply Discounted Giant: Wall Street Expects 30% Gains, One Analyst Expects 100%",bert-combined,814f2d9,positive
+META,4 Nuclear Stocks Riding the AI Power Boom Into 2027 and Beyond,bert-combined,814f2d9,neutral
+META,Zuckerberg Reaffirms Faith In 'Open Weight' AI. Will It Pay Off For Meta Stock?,bert-combined,814f2d9,neutral
+META,Shopify's AI-Driven Commerce Gains Momentum: A Sign of More Upside?,bert-combined,814f2d9,positive
+AMD,Cerebras Plummets 13% After Earnings. But Intel & AMD Barrel Ahead with Strong Gains.,bert-combined,814f2d9,positive
+AMD,Sector Update: Tech Stocks Gain Thursday Afternoon,bert-combined,814f2d9,positive
+AMD,Advanced Micro Devices (AMD) Plans $5 Billion Bond Sale For AI Expansion,bert-combined,814f2d9,neutral
+AMD,BofA picks AMD and Nvidia as AI chip winners in massive CPU market,bert-combined,814f2d9,positive
+AMD,BofA Reveals Its AI Stocks To Buy List,bert-combined,814f2d9,neutral
+AMD,"Down 15% From Its All-Time High, Is Now the Time to Load Up on AMD Stock?",bert-combined,814f2d9,neutral
+INTC,Intel Stock Jumps as Bank of America Sees Bigger CPU Market,bert-combined,814f2d9,positive
+INTC,Why Intel Stock Popped Today,bert-combined,814f2d9,neutral
+INTC,Intel's $20 billion stock sale has surprising upside,bert-combined,814f2d9,positive
+INTC,Déjà Vu. Why Intel Is Eyeing a Return to Memory.,bert-combined,814f2d9,neutral
+INTC,Intel’s Best Growth in 15 Years: 25% Revenue Surge and Our New Price Target,bert-combined,814f2d9,positive
+INTC,Hold Intel And Strictly Follow These Binary Catalysts,bert-combined,814f2d9,neutral
+MU,"AI infrastructure stocks surge after strong earnings from CoreWeave, Supermicro",bert-combined,814f2d9,positive
+MU,"DRAM Movers: These Memory/Storage ETFs Are Soaring as Sandisk, Micron Rally",bert-combined,814f2d9,positive
+MU,Stock Market Today: Nasdaq 100 Leads Upside; Sellers Yank Coach Bag Firm Lower (Live Coverage),bert-combined,814f2d9,negative
+MU,Micron Faces a New Burry Bet as China Memory Pressure Builds,bert-combined,814f2d9,negative
+MU,Micron Just Lost Ground in Key Memory Market,bert-combined,814f2d9,negative
+MU,"Memory Stocks Open Flat And Then Soar: Micron Up 6%, SK Hynix 8%, SanDisk Up 15%. Here’s What’s Driving the Move.",bert-combined,814f2d9,positive
