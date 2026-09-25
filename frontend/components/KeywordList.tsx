@@ -1,9 +1,9 @@
 /**
- * 熱門關鍵字：後端已算好近期標題的 TF-IDF 分數，這裡依分數排行、以長條表示相對強弱。
- * （取代原本的字雲：字級不再承載分數，四階字級不被打破。）
+ * 熱門關鍵字：後端已算好近期標題的 TF-IDF 分數，這裡依分數排行、長條表示相對強弱（依序長出）。
  */
 
 import type { KeywordScore } from "@/lib/api";
+import { delay } from "@/lib/motion";
 
 const LIMIT = 10;
 const MOBILE_LIMIT = 6; // 單欄時只列前 6 名，雙欄（sm 以上）列滿 10 名
@@ -35,16 +35,20 @@ export default function KeywordList({ keywords, ticker }: { keywords: KeywordSco
   const max = Math.max(...shown.map((k) => k.score));
 
   return (
-    <ol className="grid gap-x-8 sm:grid-cols-2">
+    <ol className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
       {shown.map((k, i) => (
         <li
           key={k.word}
-          className={`${i >= MOBILE_LIMIT ? "hidden sm:flex" : "flex"} min-h-10 items-center gap-3 border-b border-border`}
+          className={`${i >= MOBILE_LIMIT ? "hidden sm:grid" : "grid"} grid-cols-[1.5rem_7rem_minmax(0,1fr)] items-center gap-2`}
           title={`TF-IDF 分數 ${k.score.toFixed(3)}`}
         >
-          <span className="w-28 shrink-0 truncate text-body text-ink">{k.word}</span>
-          <span className="h-1 flex-1 overflow-hidden rounded-full bg-surface-2">
-            <span className="block h-full rounded-full bg-accent" style={{ width: `${max > 0 ? (k.score / max) * 100 : 0}%` }} />
+          <span className="font-mono text-meta tabular-nums text-ink-3">{i + 1}</span>
+          <span className="truncate text-body text-ink">{k.word}</span>
+          <span className="h-1.5 overflow-hidden rounded-full bg-surface-2">
+            <span
+              className="block h-full origin-left animate-grow-x rounded-full bg-linear-to-r from-brand/60 to-brand"
+              style={{ transform: `scaleX(${max > 0 ? k.score / max : 0})`, ...delay(i, 100) }}
+            />
           </span>
         </li>
       ))}

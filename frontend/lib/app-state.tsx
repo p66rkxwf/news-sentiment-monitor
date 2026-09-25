@@ -63,7 +63,7 @@ interface AppState {
   ticker: string | null; // null＝hydration 前，尚未讀到儲存值
   view: TickerView;
   selectTicker: (t: string) => void;
-  refresh: () => void;
+  refresh: () => Promise<boolean> | null; // null＝正在抓，這次不重複送出
   recent: string[];
   watchlist: WatchRow[] | null;
   ensureWatchlist: () => void;
@@ -96,18 +96,21 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const watchRequested = useRef(false);
   const modelRequested = useRef(false);
 
-  const fetchTicker = useCallback((t: string) => {
+  /** 回傳是否成功，給「重新整理」的提示訊息用；錯誤本身已寫進 view.error */
+  const fetchTicker = useCallback((t: string): Promise<boolean> => {
     inflight.current.add(t);
-    Promise.all([api.sentiment(t), api.news(t)])
-      .then(([sentiment, news]) =>
-        setViews((prev) => ({ ...prev, [t]: { sentiment, news, error: null, loading: false } })),
-      )
-      .catch((e: unknown) =>
+    return Promise.all([api.sentiment(t), api.news(t)])
+      .then(([sentiment, news]) => {
+        setViews((prev) => ({ ...prev, [t]: { sentiment, news, error: null, loading: false } }));
+        return true;
+      })
+      .catch((e: unknown) => {
         setViews((prev) => ({
           ...prev,
           [t]: { sentiment: null, news: null, error: describeError(e, t), loading: false },
-        })),
-      )
+        }));
+        return false;
+      })
       .finally(() => inflight.current.delete(t));
   }, []);
 
@@ -124,10 +127,10 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     recentStore.set(JSON.stringify(next));
   }, []);
 
-  const refresh = useCallback(() => {
-    if (!ticker || inflight.current.has(ticker)) return;
+  const refresh = useCallback((): Promise<boolean> | null => {
+    if (!ticker || inflight.current.has(ticker)) return null;
     setViews((prev) => ({ ...prev, [ticker]: { ...(prev[ticker] ?? LOADING), loading: true } }));
-    fetchTicker(ticker);
+    return fetchTicker(ticker);
   }, [ticker, fetchTicker]);
 
   const loadWatchlist = useCallback(() => {
