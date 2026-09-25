@@ -8,6 +8,8 @@ flowchart LR
         YF[(Yahoo Finance 新聞\nyfinance，免金鑰)]
         NA[(NewsAPI\n取得金鑰後 config 一行切換)]
         HF[(Financial PhraseBank\n4,846 筆標注句)]
+        FM[(FinMind 台股中文新聞)]
+        LLM[(本機 LLM\ngemma3:27b)]
     end
 
     subgraph backend["backend（newssent package）"]
@@ -26,17 +28,24 @@ flowchart LR
             AN["analyzer.py 逐則情緒"]
             AGG["aggregate.py\n信心加權情緒指數 [−1,+1]"]
             KW["keywords.py TF-IDF 關鍵字"]
+            REC["alert_recorder.py\n離線：抓新聞＋LLM 評分"]
+            BOARD["alerts.py · alert_board.py\n當日分數對 20 日基準的 z 值"]
         end
+
+        STORE[("ScoreStore\nalert_scores.db")]
 
         subgraph api["FastAPI api/"]
             EP1["/api/stocks/{t}/sentiment"]
             EP2["/api/stocks/{t}/news"]
             EP3["/health · /api/model"]
+            EP4["/api/alerts\n/api/alerts/sessions"]
         end
     end
 
-    subgraph frontend["frontend（Next.js）"]
-        UI["SentimentGauge（SVG 半圓指針）\nKeywordCloud · NewsList · TickerSearch\nstale 徽章 · as_of · 免責聲明"]
+    subgraph frontend["frontend（Next.js 分頁式 App／PWA）"]
+        PROXY["next.config rewrites\n/api/* → :8001"]
+        STATE["app-state\n跨分頁共用、本次開啟內快取"]
+        UI["總覽（新聞刻度帶）· 新聞 · 追蹤\n預警 · 設定"]
     end
 
     HF --> PB --> MODELS
@@ -49,8 +58,33 @@ flowchart LR
     AN --> AGG --> EP1
     KW --> EP1
     AN --> EP2
-    EP1 & EP2 & EP3 -->|"REST JSON\n錯誤格式 {error:{code,message}}"| UI
+    FM --> REC
+    LLM --> REC
+    REC --> STORE --> BOARD --> EP4
+    EP1 & EP2 & EP3 & EP4 -->|"REST JSON\n錯誤格式 {error:{code,message}}"| PROXY
+    PROXY --> STATE --> UI
 ```
+
+## 前端
+
+- **一個 root layout、五個分頁**：`/` 總覽、`/news`、`/watchlist`、`/alerts`、`/settings`。
+  手機（< 1024px）是底部分頁列，電腦是左側欄；切分頁走 client-side navigation，共用狀態不會重建。
+- **只連前端**：瀏覽器打同源 `/api/*`，由 `next.config.ts` 轉送到 FastAPI（`API_PROXY_TARGET`）。
+  手機只要能連到前端即可，後端不必開在區網、也不必改 CORS。
+- **快取與限流**：後端限流是每 IP 每分鐘 30 次、所有端點共用，而經轉送後所有裝置都是同一個 IP。
+  所以 `lib/app-state.tsx` 把各標的的情緒與新聞留在本次開啟內，追蹤清單與模型資訊等到有分頁用到才抓、只抓一次；
+  預警分頁看過的日期也留在模組層快取。
+- **偏好存在瀏覽器**：目前標的、最近查詢、主題存 localStorage（`lib/local-store.ts`，`useSyncExternalStore` 包裝；
+  無痕模式等讀寫失敗時退回記憶體）。預設深色。
+- **PWA**：`app/manifest.ts` ＋ `app/icon.tsx`、`app/apple-icon.tsx`、`app/icons/[variant]`（192／512／maskable）。
+  沒有 service worker、不做離線快取。
+
+## 資料流（預警分頁）
+
+1. `alert_recorder` 離線執行：FinMind 抓 49 檔的中文標題 → 濾掉盤勢報導標題 → LLM 逐則評分 → 寫入 `alert_scores.db`
+2. `/api/alerts/sessions` 回可查詢的交易日（已確認交易日＋推估到下一個尚未開盤的交易日）；前端用它切換日期
+3. `/api/alerts?as_of=…` 只讀分數庫：開盤前可得標題的平均分數，對前 20 個交易日算 z 值（< −1.5 留意、< −2 高度異常）
+4. 請求路徑上不打外部 API、不跑 LLM；分數庫沒跑 recorder 的日子會回「資料不足」並附原因
 
 ## 五條架構原則的落點
 

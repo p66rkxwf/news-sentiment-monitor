@@ -17,14 +17,17 @@
 ## 系統概觀
 
 ```
-使用者輸入股票代號（如 AAPL）
+使用者（手機或電腦）
         │
         ▼
- Next.js 前端儀表板 ──► FastAPI 後端 ──► NewsProvider（yfinance 主源 + 快取降級）
-   · 情緒指針                │
-   · 關鍵字雲                ▼
-   · 新聞情緒列表      BERT 情緒分類（五模型比較選出，見 docs/model_selection.md）
+ Next.js 分頁式 App ──/api/* 轉送──► FastAPI 後端 ──► NewsProvider（yfinance 主源 + 快取降級）
+   · 總覽：新聞刻度帶                 │                 └► BERT 情緒分類（bert-combined）
+   · 新聞／追蹤清單                   │
+   · 台股預警 ◄───────────────────────┴──► 預警分數庫（alert_recorder 離線寫入：FinMind 中文新聞 + LLM 評分）
+   · 設定（主題、模型資訊）
 ```
+
+前端是可以「加到主畫面」的 PWA：手機是底部分頁列、電腦是左側欄，預設深色。
 
 ## 技術棧
 
@@ -34,8 +37,9 @@
 | 即時新聞 | yfinance news（主源，免金鑰）、NewsAPI（`config.NEWS_PROVIDER` 一行切換） |
 | 基線模型 | TF-IDF + Logistic Regression、TF-IDF + SVM |
 | 深度模型 | DistilBERT / BERT / RoBERTa fine-tuning（PyTorch CUDA + Hugging Face） |
+| 台股預警 | FinMind 中文新聞（事後回補）＋ 本機 LLM `gemma3:27b` 評分，z 值對 20 日基準 |
 | 後端 | FastAPI（Python，單一 package `newssent/`） |
-| 前端 | Next.js + TypeScript + Tailwind |
+| 前端 | Next.js 16 + TypeScript + Tailwind v4；分頁式 App、PWA（manifest＋圖示，無離線快取） |
 | 評估指標 | Accuracy、Macro F1、推論速度（GPU/CPU 分列） |
 
 ## 目錄導覽
@@ -47,18 +51,19 @@ backend/
     data/           # PhraseBank 處理、NewsProvider 介面（yfinance/NewsAPI）、新聞快取
     text/           # clean_text()：訓練/推論唯一共用前處理入口
     ml/             # 五模型訓練、調參、評估、比較、artifact registry
-    inference/      # ticker→新聞→情緒→彙總指數→關鍵字
+    inference/      # ticker→新聞→情緒→彙總指數→關鍵字；台股預警（alerts、alert_board、alert_recorder）
     api/            # FastAPI routers、schemas、錯誤契約
   artifacts/        # 模型權重與 metadata.json（權重 gitignore）
   data/             # 資料集原始檔與切分索引
   tools/            # spot_check.py（抽測取樣/盲標表）、compare_arms.py（方案對照＋McNemar）、
-                    # contamination_check.py（預訓練污染）、timestamp_lag.py（時間戳落差）
-  tests/            # pytest 81 項（FakeProvider，不打網路；含 pytest -m leakage 洩漏防治 18 項）
+                    # contamination_check.py（預訓練污染）、timestamp_lag.py（時間戳落差）、
+                    # alert_backtest.py（預警歷史回測）、judge_qualify.py（Codex 裁判資格考）
+  tests/            # pytest 152 項（FakeProvider，不打網路；含 pytest -m leakage 洩漏防治 18 項）
 frontend/
-  app/              # Next.js 主頁（stale 徽章、as_of、免責聲明）
-  components/       # SentimentGauge、KeywordCloud、NewsList、TickerSearch
-  lib/              # API client（對應 Phase 0 凍結契約）
-docs/               # 架構圖、模型比較/選型、實驗設計、線上抽測、資料探索
+  app/              # 五個分頁：/ 總覽、/news、/watchlist、/alerts、/settings；manifest 與圖示
+  components/       # AppShell（分頁列／側欄）、SentimentScale（新聞刻度帶）、NewsList、AlertCard…
+  lib/              # API client（對應 Phase 0 凍結契約）、跨分頁共用狀態 app-state
+docs/               # 架構圖、模型比較/選型、實驗設計、線上抽測、資料探索、預警回測
 ```
 
 ## 開發階段（對應申請表進度 A–H）— 全部完成
@@ -88,6 +93,14 @@ docs/               # 架構圖、模型比較/選型、實驗設計、線上抽
 > 用無法區分的差距換模型等於拿噪音當決策依據；當初換模型的理由是任務定義而非分數。
 > 但**不再宣稱一致率提升**。
 
+### 第三輪（2026-09）台股情緒預警與前端 App 化
+
+| 主題 | 結果 |
+|---|---|
+| 台股情緒異常預警（`/api/alerts`） | 49 檔台股、FinMind 中文新聞、LLM 評分；當日分數對前 20 個交易日的 z 值，z < −1.5 留意、z < −2 高度異常 |
+| 預先聲明的歷史回測（[報告](docs/alert_backtest.md)） | 21 件大跌事件，事前 5 日內示警 4/17，與隨機響鈴無法區分（**p = 0.983**）——**不得宣稱「提前預警」**，只呈現開盤前的即時示警與證據標題 |
+| 前端改為分頁式 App | 總覽／新聞／追蹤／預警／設定；手機底部分頁列、電腦左側欄；可加到主畫面（PWA） |
+
 ## 啟動方式
 
 ```powershell
@@ -97,7 +110,7 @@ python -m venv .venv
 .venv\Scripts\activate
 pip install torch --index-url https://download.pytorch.org/whl/cu128   # NVIDIA GPU
 pip install -e ".[dev]"
-pytest                                    # 81 項測試應全部通過
+pytest                                    # 152 項測試應全部通過
 pytest -m leakage                         # 18 項洩漏防治（pre-push 閘門跑的就是這組）
 powershell -File ../scripts/install_hooks.ps1   # 安裝 pre-push 閘門（測不過不准 push）
 uvicorn newssent.api.main:app --port 8001 # 啟動 API（:8000 讓給 stock 專案）
@@ -105,6 +118,24 @@ uvicorn newssent.api.main:app --port 8001 # 啟動 API（:8000 讓給 stock 專�
 # 前端
 cd frontend && npm install && npm run dev  # http://localhost:3000
 ```
+
+**前端怎麼連後端**：瀏覽器只連前端，`/api/*` 由 Next 轉送到 `http://127.0.0.1:8001`
+（改用環境變數 `API_PROXY_TARGET`）。後端不必開在區網、也不必改 CORS。
+
+**用手機看（demo）**：手機和電腦連同一個 Wi-Fi，然後：
+
+```powershell
+cd frontend
+npm run build; npm start                   # 正式模式，手機開 http://<電腦的區網 IP>:3000
+# 若要用 dev 模式：$env:DEV_ORIGINS="192.168.x.x"; npm run dev
+```
+
+- iPhone Safari →「分享」→「加入主畫面」，之後從主畫面開就是全螢幕、沒有網址列。
+- Android Chrome 只有在 HTTPS 或 localhost 下才會以 App 形式安裝；區網 http 只會是一般捷徑（開在瀏覽器裡）。
+- **限流是共用的**：後端每個 IP 每分鐘 30 次、所有端點合計；經 Next 轉送後所有裝置都算同一個 IP。
+  前端已把資料快取在本次開啟內（切分頁不重抓），單人 demo 夠用；多台裝置同時操作可能看到「查詢太頻繁」。
+- 預警分頁的資料來自 `backend/alert_scores.db`，要看最新交易日得先跑 `python -m newssent.inference.alert_recorder`；
+  沒跑的話預設日期會顯示「資料不足」，用日期切換看歷史交易日即可。
 
 訓練與比較：
 
@@ -129,6 +160,8 @@ python tools/timestamp_lag.py              # 發布→抓取時間落差實測
 - **方法論**：[預先聲明](docs/preregistration_2026-08-14.md)（假說與裁決規則事先定死）、
   [確認實驗結果](docs/confirmation_2026-09-03.md)（H1 未獲確認，誠實記為失敗）、
   [預訓練污染分析](docs/pretraining_contamination.md)、[時間戳語意](docs/timestamp_semantics.md)
+- **台股預警**：[回測預先聲明](docs/alert_backtest_prereg.md)、[回測結果](docs/alert_backtest.md)（p = 0.983，不得宣稱提前預警）、
+  [Codex 裁判資格考預先聲明](docs/judge_qualification_prereg.md)（合格標準 strict，尚待執行）
 - **實驗**：[實驗 #6 任務定義修正](docs/experiment_target_sentiment.md)（候選結論，含警語）、
   [模型比較](docs/model_comparison.md)、[選型依據](docs/model_selection.md)、[實驗設計](docs/experiment_design.md)
 - **線上抽測**：[財金組複核](docs/online_spot_check.md)、[07-17 批](docs/online_spot_check_2026-07-17.md)
