@@ -12,7 +12,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import {
   api,
   ApiError,
-  TICKER_PATTERN,
+  isAllowedTicker,
   type ModelInfoResponse,
   type NewsResponse,
   type SentimentResponse,
@@ -26,7 +26,8 @@ const RECENT_LIMIT = 6;
 // 伺服器端回 null：尚未知道使用者上次看哪一檔，不預先用 AAPL 抓一次
 const tickerStore = createLocalStore<string | null>(
   "ticker",
-  (raw) => (raw && TICKER_PATTERN.test(raw) ? raw : DEFAULT_TICKER),
+  // 靜態站只有預先計算的清單：舊版存下的清單外代號（例如 PLTR）退回預設
+  (raw) => (raw && isAllowedTicker(raw) ? raw : DEFAULT_TICKER),
   null,
 );
 
@@ -36,7 +37,7 @@ const recentStore = createLocalStore<string[]>(
     try {
       const parsed: unknown = JSON.parse(raw ?? "[]");
       return Array.isArray(parsed)
-        ? parsed.filter((t): t is string => typeof t === "string" && TICKER_PATTERN.test(t)).slice(0, RECENT_LIMIT)
+        ? parsed.filter((t): t is string => typeof t === "string" && isAllowedTicker(t)).slice(0, RECENT_LIMIT)
         : [];
     } catch {
       return [];

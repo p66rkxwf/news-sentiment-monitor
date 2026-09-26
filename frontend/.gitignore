@@ -17,6 +17,11 @@
 /.next/
 /out/
 
+# 靜態站資料：每日排程由 backend/newssent/export_static.py 產生，不進版控
+/public/data/
+# wrangler pages dev 的本機暫存
+.wrangler/
+
 # production
 /build
 

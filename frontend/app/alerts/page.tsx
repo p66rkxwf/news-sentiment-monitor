@@ -15,7 +15,7 @@ import AlertCard, { LEVEL } from "@/components/AlertCard";
 import Skeleton from "@/components/Skeleton";
 import StatusBanner from "@/components/StatusBanner";
 import { IconButton, PageTitle, TopBar } from "@/components/TopBar";
-import { api, ApiError, type AlertLevel, type AlertsResponse } from "@/lib/api";
+import { api, ApiError, STATIC_DATA, type AlertLevel, type AlertsResponse } from "@/lib/api";
 import { press, snappy } from "@/lib/motion";
 
 const WEEKDAY = ["週日", "週一", "週二", "週三", "週四", "週五", "週六"];
@@ -33,13 +33,16 @@ const cache: {
 } = { sessions: null, latest: null, asOf: null, includeAll: false, results: {} };
 
 /** 寫入模組層快取（在元件外定義：React Compiler 不允許元件內直接改外部變數） */
+// 歷史回測（docs/alert_backtest.md）所用的評分器；線上改用其他評分器時要揭露回測結論未必適用
+const LEGACY_SCORER = "llm-gemma3:27b";
+
 function remember(patch: Partial<typeof cache>) {
   Object.assign(cache, patch);
 }
 
 function describe(e: unknown): string {
   if (e instanceof ApiError && e.code === "ALERT_DATA_UNAVAILABLE") {
-    return "預警分數庫是空的：先執行 alert_recorder 抓新聞並評分。";
+    return STATIC_DATA ? e.message : "預警分數庫是空的：先執行 alert_recorder 抓新聞並評分。";
   }
   if (e instanceof ApiError && e.status === 429) return "查詢太頻繁，請等一分鐘再試";
   return e instanceof Error ? e.message : "發生未知錯誤，請重新整理";
@@ -216,6 +219,7 @@ export default function AlertsPage() {
           <Info size={15} className="mt-0.5 shrink-0 text-brand" />
           <span>
             歷史回測中，事前示警率與隨機響鈴無法區分（p = 0.983）。本頁呈現的是開盤前的即時示警與證據標題，不是提前預警。
+            {data && data.scorer !== LEGACY_SCORER && `回測以本機 gemma3:27b 評分；本頁評分器為 ${data.scorer}，尚未重新回測。`}
             台股慣例漲紅跌綠，與美股分頁相反；這裡的紅色與琥珀色代表示警等級。回測紀錄見專案 docs/alert_backtest.md。
           </span>
         </p>

@@ -1,0 +1,11 @@
+# Cloudflare Pages 回應標頭（靜態站 news.sekinv.com）。
+# /data/* 是公開、不需憑證的 JSON：stock.sekinv.com 的情緒卡跨站讀取 stocks/<ADR>/sentiment.json。
+# 以前 config.ALLOWED_ORIGINS 不用 *，是為了保護有額度的即時 API；靜態檔沒有這個顧慮。
+/data/*
+  Access-Control-Allow-Origin: *
+
+# metadata 圖示（app/icon.tsx、apple-icon.tsx）靜態輸出後沒有副檔名，主機會當成 octet-stream
+/icon
+  Content-Type: image/png
+/apple-icon
+  Content-Type: image/png

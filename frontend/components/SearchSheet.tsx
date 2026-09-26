@@ -4,15 +4,16 @@
  * 切換標的：手機是可往下拖曳關閉的底部抽屜（vaul），桌機是置中對話框（Radix Dialog）。
  * 格式與後端 deps.py 同一條正規，錯誤格式在前端就擋下（少一次 422）。
  * 不給空白畫面：列出輸入中的代號、最近查詢與追蹤清單，點一下就切換。
+ * 靜態站（CURATED_TICKERS 非空）只有每日預先計算的標的：輸入框改為篩選清單，清單外的代號不能送出。
  */
 
-import { ArrowUpRight, Clock, Search, Star } from "lucide-react";
+import { ArrowUpRight, Clock, List, Search, Star } from "lucide-react";
 import { motion } from "motion/react";
 import { useRef, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Drawer, DrawerContent, DrawerDescription, DrawerTitle } from "@/components/ui/drawer";
 import { useIsDesktop } from "@/hooks/use-media-query";
-import { TICKER_PATTERN } from "@/lib/api";
+import { CURATED_TICKERS, isAllowedTicker } from "@/lib/api";
 import { useAppState, WATCHLIST } from "@/lib/app-state";
 import { delay, press } from "@/lib/motion";
 
@@ -30,7 +31,9 @@ function SearchBody({
   const [invalid, setInvalid] = useState(false);
 
   const typed = value.trim().toUpperCase();
-  const typedValid = TICKER_PATTERN.test(typed);
+  const typedValid = isAllowedTicker(typed);
+  const curated = CURATED_TICKERS.length > 0;
+  const matches = curated ? CURATED_TICKERS.filter((t) => t.startsWith(typed)) : [];
 
   const choose = (t: string) => {
     selectTicker(t);
@@ -70,7 +73,7 @@ function SearchBody({
             enterKeyHint="search"
             aria-label="美股代號"
             aria-invalid={invalid}
-            placeholder="輸入美股代號，例如 AAPL"
+            placeholder={curated ? "輸入代號篩選，例如 NVDA" : "輸入美股代號，例如 AAPL"}
             value={value}
             onChange={(e) => {
               setValue(e.target.value);
@@ -81,7 +84,9 @@ function SearchBody({
         </div>
         {invalid && (
           <p role="alert" className="mt-2 px-1 text-meta text-neg">
-            代號格式不對：1–5 個英文字母，可加一碼類別（例如 AAPL、BRK.B）。
+            {curated
+              ? `本站每日預先計算 ${CURATED_TICKERS.length} 檔，請從下方清單選擇。`
+              : "代號格式不對：1–5 個英文字母，可加一碼類別（例如 AAPL、BRK.B）。"}
           </p>
         )}
       </form>
@@ -122,6 +127,32 @@ function SearchBody({
                 </button>
               ))}
             </div>
+          </section>
+        )}
+
+        {curated && (
+          <section className="mb-5">
+            <h2 className="mb-2 flex items-center gap-1.5 px-1 text-meta text-ink-3">
+              <List size={13} /> {typed ? `符合「${typed}」` : `全部標的（${CURATED_TICKERS.length} 檔，每日更新）`}
+            </h2>
+            {matches.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {matches.map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => choose(t)}
+                    className={`min-h-10 rounded-full border px-4 font-mono text-body font-semibold transition-[scale] duration-150 active:scale-95 ${
+                      t === ticker ? "border-brand bg-brand-soft text-brand" : "border-hairline bg-surface-2 text-ink"
+                    }`}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <p className="px-1 text-meta text-ink-3">清單中沒有符合的代號。</p>
+            )}
           </section>
         )}
 
@@ -169,7 +200,9 @@ export default function SearchSheet({ open, onOpenChange }: { open: boolean; onO
           className="top-24 flex max-h-[70vh] translate-y-0 flex-col gap-0 rounded-3xl border-hairline bg-surface p-0 pt-4 shadow-(--shadow-float) sm:max-w-md"
         >
           <DialogTitle className="sr-only">切換標的</DialogTitle>
-          <DialogDescription className="sr-only">輸入美股代號，或從最近查詢與追蹤清單選一檔</DialogDescription>
+          <DialogDescription className="sr-only">
+          {CURATED_TICKERS.length > 0 ? "從本站每日預先計算的標的中選一檔" : "輸入美股代號，或從最近查詢與追蹤清單選一檔"}
+        </DialogDescription>
           <SearchBody onDone={close} autoFocus />
         </DialogContent>
       </Dialog>
@@ -184,7 +217,9 @@ export default function SearchSheet({ open, onOpenChange }: { open: boolean; onO
         className="h-[85dvh] max-h-[85dvh] rounded-t-3xl border-hairline bg-surface"
       >
         <DrawerTitle className="px-4 pb-3 pt-3 text-title font-semibold">切換標的</DrawerTitle>
-        <DrawerDescription className="sr-only">輸入美股代號，或從最近查詢與追蹤清單選一檔</DrawerDescription>
+        <DrawerDescription className="sr-only">
+          {CURATED_TICKERS.length > 0 ? "從本站每日預先計算的標的中選一檔" : "輸入美股代號，或從最近查詢與追蹤清單選一檔"}
+        </DrawerDescription>
         {/* 關閉後 Radix 會在離場動畫結束才卸載內容；再次開啟時輸入框是全新的 */}
         <SearchBody onDone={close} autoFocus={false} inputRef={inputRef} />
       </DrawerContent>

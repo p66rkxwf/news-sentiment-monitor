@@ -8,6 +8,8 @@ import { useEffect } from "react";
 import Skeleton from "@/components/Skeleton";
 import ThemeToggle from "@/components/ThemeToggle";
 import { PageTitle, TopBar } from "@/components/TopBar";
+import DataFreshness from "@/components/DataFreshness";
+import { STATIC_DATA } from "@/lib/api";
 import { useAppState } from "@/lib/app-state";
 
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
@@ -68,7 +70,7 @@ export default function SettingsPage() {
             </div>
           ) : modelInfo === "error" ? (
             <Note icon={ShieldAlert} tint="bg-neg-soft text-neg">
-              讀不到模型資訊：後端沒有回應，確認 API 已在 :8001 啟動。
+              {STATIC_DATA ? "讀不到模型資訊，請稍後再試。" : "讀不到模型資訊：後端沒有回應，確認 API 已在 :8001 啟動。"}
             </Note>
           ) : modelInfo.is_mock ? (
             <Note icon={FlaskConical} tint="bg-warn-soft text-warn">
@@ -89,6 +91,12 @@ export default function SettingsPage() {
           )}
         </Group>
 
+        {STATIC_DATA && (
+          <Group title="資料">
+            <DataFreshness />
+          </Group>
+        )}
+
         <Group title="研究說明">
           <Note icon={Target} tint="bg-brand-soft text-brand">
             模型判斷的是「這則標題對這支股票是好消息還是壞消息」，不是句子本身的語氣。
@@ -98,6 +106,7 @@ export default function SettingsPage() {
           </Note>
           <Note icon={ShieldAlert} tint="bg-neg-soft text-neg">
             台股預警在歷史回測中，事前示警率與隨機響鈴無法區分（p = 0.983），只能當作開盤前的即時示警，不是提前預警。
+            {STATIC_DATA && "回測以本機 gemma3:27b 評分；公開站改用雲端託管模型評分，尚未重新回測。"}
           </Note>
           <p className="px-4 py-3 text-meta text-ink-3">完整紀錄在專案的 docs/ 資料夾（confirmation_2026-09-03.md、alert_backtest.md）。</p>
         </Group>
