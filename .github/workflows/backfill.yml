@@ -1,0 +1,97 @@
+# 換評分器後的分數回補（手動觸發）：新聞標題已在分數庫內，只補評分，不動網站。
+#
+# 預警要有 20 個交易日的基準才能判斷，換用新評分器（本機 Ollama → Gemini API）後，得先回補一段
+# 歷史分數看板才有內容。免費層每日額度有限，分段執行：每次用 max_requests 控制呼叫量，
+# 額度用盡（exit 3）時已評的都已存檔，隔天再觸發一次即從斷點接續。
+# 最後產出新舊評分器的一致性報告（tools/scorer_agreement.py，門檻見 docs/scorer_switch_prereg.md）。
+name: backfill
+
+on:
+  workflow_dispatch:
+    inputs:
+      start:
+        description: "回補起日（UTC 日；只評此日以後發布的標題）"
+        default: "2026-07-15"
+      end:
+        description: "回補迄日（留空＝今天）"
+        default: ""
+      max_requests:
+        description: "本次最多呼叫幾次 Gemini"
+        default: "6500"
+
+permissions:
+  contents: write # 推 state 分支
+
+concurrency:
+  group: site
+  cancel-in-progress: false
+
+env:
+  PYTHONIOENCODING: utf-8
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330 # 單一 job 上限 6 小時：25 RPM × 5 小時 ≈ 7,500 次
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 取出狀態分支
+        uses: actions/checkout@v4
+        with:
+          ref: state
+          path: _state
+
+      - name: 還原分數庫
+        run: cp _state/alert_scores.db backend/
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.10"
+          cache: pip
+          cache-dependency-path: |
+            backend/pyproject.toml
+            backend/requirements-ci.txt
+
+      - name: 安裝相依（版本鎖定；CPU 版 torch）
+        run: |
+          pip install torch==2.11.0 --index-url https://download.pytorch.org/whl/cpu
+          pip install -e "backend[dev]" -c backend/requirements-ci.txt
+
+      - name: 回補評分
+        id: backfill
+        working-directory: backend
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
+        run: |
+          set +e
+          python -m newssent.inference.alert_recorder --start "${{ inputs.start }}" ${{ inputs.end && format('--end {0}', inputs.end) || '' }} --max-requests "${{ inputs.max_requests }}"
+          rc=$?
+          set -e
+          if [ $rc -eq 3 ]; then echo "::warning::額度用盡，已評的已存檔；再觸發一次即接續"; elif [ $rc -ne 0 ]; then exit $rc; fi
+
+      - name: 資料庫完整性檢查
+        if: always()
+        id: integrity
+        run: |
+          python -c "import sqlite3,sys; r=sqlite3.connect('backend/alert_scores.db').execute('PRAGMA integrity_check').fetchone()[0]; print(r); sys.exit(r!='ok')"
+
+      - name: 保存狀態（只換分數庫）
+        if: always() && steps.integrity.outcome == 'success'
+        run: |
+          cp backend/alert_scores.db _state/
+          scripts/commit_state.sh _state "state: backfill run ${GITHUB_RUN_ID}"
+
+      - name: 一致性報告（新 vs 本機 gemma3:27b）
+        if: always() && steps.integrity.outcome == 'success'
+        working-directory: backend
+        run: python tools/scorer_agreement.py --out ../agreement
+
+      - name: 上傳報告
+        if: always() && steps.integrity.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: scorer-agreement-${{ github.run_id }}
+          path: agreement
+          retention-days: 90

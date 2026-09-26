@@ -1,0 +1,6 @@
+# 雲端排程使用的正式模型 artifact（檔案本身不進 git，放 GitHub Release）。
+# scripts/fetch_models.sh 依此下載並驗證 sha256——雜湊不符＝不是訓練時那份模型，拒絕執行。
+# 換模型：上傳新 Release（新 tag）→ 更新此檔的 tag/sha256。
+# 授權：訓練語料含 Financial PhraseBank（CC BY-NC-SA 3.0）與 SEntFiN，權重以相同條件（非商業、相同方式分享）提供。
+# tag        asset                    sha256                                                            path
+models-v1    bert-combined.joblib     43a4f0193a5c8cf52d7c353486db55d4ed2a00dd3e89df27b1ec3b6460efa23e  backend/artifacts/bert-combined/model.joblib

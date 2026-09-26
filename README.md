@@ -29,6 +29,8 @@
 
 前端是可以「加到主畫面」的 PWA：手機是底部分頁列、電腦是左側欄，預設深色。
 
+**公開站：<https://news.sekinv.com>**（靜態站，GitHub Actions 每日台北 07:30 更新；只提供 `config.STATIC_TICKERS` 的 24 檔）。部署架構、狀態分支與每日排程見 [docs/deploy.md](docs/deploy.md)。
+
 ## 技術棧
 
 | 層 | 技術 |
@@ -37,7 +39,7 @@
 | 即時新聞 | yfinance news（主源，免金鑰）、NewsAPI（`config.NEWS_PROVIDER` 一行切換） |
 | 基線模型 | TF-IDF + Logistic Regression、TF-IDF + SVM |
 | 深度模型 | DistilBERT / BERT / RoBERTa fine-tuning（PyTorch CUDA + Hugging Face） |
-| 台股預警 | FinMind 中文新聞（事後回補）＋ 本機 LLM `gemma3:27b` 評分，z 值對 20 日基準 |
+| 台股預警 | FinMind 中文新聞＋ LLM 目標導向評分，z 值對 20 日基準。回測用本機 `gemma3:27b`；公開站改用 Google AI Studio 託管模型（會把標題送到 Google），兩者分數分開存，換用一致性見 [預先聲明](docs/scorer_switch_prereg.md) |
 | 後端 | FastAPI（Python，單一 package `newssent/`） |
 | 前端 | Next.js 16 + TypeScript + Tailwind v4；shadcn/ui（Radix、vaul）、Motion、Recharts、lucide；分頁式 App、PWA（manifest＋圖示，無離線快取） |
 | 評估指標 | Accuracy、Macro F1、推論速度（GPU/CPU 分列） |
