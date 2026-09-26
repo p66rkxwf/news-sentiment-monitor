@@ -9,11 +9,14 @@
 - 同一則新聞會被 Yahoo 股市、Yahoo 新聞、豐雲學堂等轉載多次、時間各異：
   依標題去重、保留最早的發布時間（最早可得的時點才是資訊到達的時刻）。
 - 標題尾巴帶「 - 來源名」，會讓轉載的同一則新聞看起來像不同標題，而且不是內容，去掉。
+- 偶爾會讀取逾時（2026-09-26 全池回補跑到第 29 檔時發生）：網路類錯誤與 5xx 以退避重試，
+  額度用盡（402）則不重試——要等一小時，交給使用者稍後重跑（recorder 可從斷點接續）。
 """
 
 from __future__ import annotations
 
 import time
+from collections.abc import Callable
 from datetime import date, datetime, timezone
 
 from newssent.data.provider import Article
@@ -21,6 +24,7 @@ from newssent.data.provider import Article
 FINMIND_API_URL = "https://api.finmindtrade.com/api/v4/data"
 FINMIND_PROVIDER = "finmind"
 FORUM_MARKERS = ("股市爆料同學會",)
+RETRYABLE_STATUS = frozenset({500, 502, 503, 504})
 
 
 class FinMindError(RuntimeError):
@@ -67,22 +71,35 @@ def parse_rows(rows: list[dict], fetched_at: str | None = None) -> list[Article]
 
 
 class FinMindNewsClient:
-    def __init__(self, token: str = "", min_interval: float | None = None, timeout: float = 60.0):
+    def __init__(
+        self,
+        token: str = "",
+        min_interval: float | None = None,
+        timeout: float = 60.0,
+        retries: int = 3,
+        backoff: float = 30.0,
+        http_get: Callable | None = None,
+        sleep: Callable[[float], None] = time.sleep,
+    ):
         self._token = token
         # 300 次/時＝每 12 秒一次；600 次/時＝每 6 秒一次（各留一點餘裕）
         self._min_interval = min_interval if min_interval is not None else (6.5 if token else 12.5)
         self._timeout = timeout
+        self._retries = retries
+        self._backoff = backoff  # 第 n 次重試前等 backoff × 2^(n-1) 秒
+        self._http_get = http_get
+        self._sleep = sleep
         self._last_call = 0.0
 
-    def fetch_day(self, stock_id: str, utc_day: date) -> list[Article]:
+    def _get(self, stock_id: str, utc_day: date):
         import httpx
 
         wait = self._min_interval - (time.monotonic() - self._last_call)
         if wait > 0:
-            time.sleep(wait)
+            self._sleep(wait)
         headers = {"Authorization": f"Bearer {self._token}"} if self._token else {}
         try:
-            resp = httpx.get(
+            return (self._http_get or httpx.get)(
                 FINMIND_API_URL,
                 params={"dataset": "TaiwanStockNews", "data_id": stock_id, "start_date": utc_day.isoformat()},
                 headers=headers,
@@ -90,9 +107,26 @@ class FinMindNewsClient:
             )
         finally:
             self._last_call = time.monotonic()
-        resp.raise_for_status()
-        payload = resp.json()
-        if payload.get("status") != 200:
-            raise FinMindError(f"FinMind {stock_id} {utc_day}: {payload.get('msg')}")
+
+    def fetch_day(self, stock_id: str, utc_day: date) -> list[Article]:
+        import httpx
+
+        for attempt in range(self._retries + 1):
+            try:
+                resp = self._get(stock_id, utc_day)
+            except httpx.TransportError as exc:  # 逾時、連線中斷：網路暫時性問題
+                problem = type(exc).__name__
+            else:
+                if resp.status_code not in RETRYABLE_STATUS:
+                    break
+                problem = f"HTTP {resp.status_code}"
+            if attempt == self._retries:
+                raise FinMindError(f"FinMind {stock_id} {utc_day}: 連續 {attempt + 1} 次失敗（{problem}）")
+            self._sleep(self._backoff * 2**attempt)
+
+        # 額度用盡等非暫時性錯誤：FinMind 在 body 的 status/msg 說明原因（HTTP 狀態碼也可能非 200）
+        payload = resp.json() if resp.headers.get("content-type", "").startswith("application/json") else {}
+        if resp.is_error or payload.get("status") != 200:
+            raise FinMindError(f"FinMind {stock_id} {utc_day}: {payload.get('msg') or f'HTTP {resp.status_code}'}")
         fetched_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
         return parse_rows(payload.get("data") or [], fetched_at=fetched_at)
