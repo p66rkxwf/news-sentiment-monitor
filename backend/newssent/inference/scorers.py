@@ -12,7 +12,7 @@ from __future__ import annotations
 from typing import Protocol
 
 from newssent.config import LABEL_NAMES
-from newssent.inference.llm_review import OllamaReviewer
+from newssent.inference.llm_review import GeminiReviewer, OllamaReviewer
 
 Proba = tuple[float, float, float]  # 順序 = LABEL_NAMES（negative, neutral, positive）
 
@@ -26,15 +26,17 @@ class HeadlineScorer(Protocol):
 
 
 class LlmScorer:
-    """本機 LLM 目標導向判讀，沿用實驗 #6 B2 組的同一份提示詞（llm_review._SYSTEM_PROMPT）。
+    """LLM 目標導向判讀（本機 Ollama 或託管 Gemini），沿用實驗 #6 B2 組的同一份提示詞（llm_review._SYSTEM_PROMPT）。
 
     LLM 只給標籤、不給機率，故輸出 one-hot；每日平均分數因此等於
     (正面則數 − 負面則數) / 總則數。
     """
 
-    def __init__(self, reviewer: OllamaReviewer):
+    def __init__(self, reviewer: OllamaReviewer | GeminiReviewer):
         self._reviewer = reviewer
-        self.version = f"llm-{reviewer.model}"
+        # Ollama 版維持 "llm-<模型>"（既有分數的版本字串不可變）；託管版帶端點前綴，
+        # 同一個模型走不同推論端點（量化、模板不同）也算不同評分器，分數不混算
+        self.version = f"llm-{getattr(reviewer, 'version_tag', reviewer.model)}"
 
     def score(self, target: str, titles: list[str]) -> list[Proba | None]:
         out: list[Proba | None] = []

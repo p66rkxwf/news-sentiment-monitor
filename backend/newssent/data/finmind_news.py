@@ -130,3 +130,20 @@ class FinMindNewsClient:
             raise FinMindError(f"FinMind {stock_id} {utc_day}: {payload.get('msg') or f'HTTP {resp.status_code}'}")
         fetched_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
         return parse_rows(payload.get("data") or [], fetched_at=fetched_at)
+
+
+def fetch_trading_dates(start: date, end: date, token: str = "", http_get: Callable | None = None) -> list[date]:
+    """FinMind TaiwanStockTradingDate：台股交易日表（yfinance 取不到 ^TWII 時的備援交易日曆）。"""
+    import httpx
+
+    headers = {"Authorization": f"Bearer {token}"} if token else {}
+    resp = (http_get or httpx.get)(
+        FINMIND_API_URL,
+        params={"dataset": "TaiwanStockTradingDate", "start_date": start.isoformat(), "end_date": end.isoformat()},
+        headers=headers,
+        timeout=60.0,
+    )
+    payload = resp.json() if resp.headers.get("content-type", "").startswith("application/json") else {}
+    if resp.is_error or payload.get("status") != 200:
+        raise FinMindError(f"FinMind 交易日表：{payload.get('msg') or f'HTTP {resp.status_code}'}")
+    return sorted({date.fromisoformat(row["date"]) for row in payload.get("data") or [] if row.get("date")})

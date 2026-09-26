@@ -89,7 +89,25 @@ TICKER_COMPANY_NAMES: dict[str, str] = {
     "MU": "Micron",
     "NFLX": "Netflix",
     "AVGO": "Broadcom",
+    # 2026-09 靜態站固定清單（STATIC_TICKERS）新增的公司；ETF（QQQ、SPY）沒有單一公司實體，維持以代號當目標
+    "QCOM": "Qualcomm",
+    "ORCL": "Oracle",
+    "ADBE": "Adobe",
+    "CRM": "Salesforce",
+    "ASML": "ASML",
+    "ARM": "Arm",
+    "UMC": "UMC",
+    "ASX": "ASE Technology",
+    "CHT": "Chunghwa Telecom",
 }
+
+# --- 靜態站（news.sekinv.com）每日預先計算的標的 ---
+# 公開站沒有常駐後端，只能提供事先算好的清單；前端搜尋改為從此清單挑選。
+# TSM/UMC/ASX/CHT/QQQ 是 stock-trend-assistant 情緒卡的 ADR 對照與大盤代理（其 lib/newsApi.ts），不可移除。
+STATIC_TICKERS: tuple[str, ...] = (
+    "AAPL", "MSFT", "NVDA", "GOOG", "AMZN", "META", "TSLA", "AVGO", "AMD", "INTC", "MU", "NFLX",
+    "QCOM", "ORCL", "ADBE", "CRM", "ASML", "ARM", "TSM", "UMC", "ASX", "CHT", "QQQ", "SPY",
+)
 
 
 def company_name(ticker: str) -> str:
@@ -134,9 +152,17 @@ ALERT_SCORE_DB_PATH = BACKEND_ROOT / "alert_scores.db"
 # 台股中文新聞源：FinMind TaiwanStockNews（免費；註冊 token 讓每小時額度 300→600）
 FINMIND_TOKEN = os.environ.get("FINMIND_TOKEN", "")
 # 評分器：production 的 bert-combined 以英文語料訓練，**讀不懂中文標題**，不能直接用在台股新聞。
-# 預設改用本機 LLM（實驗 #6 的 B2 組、同一份目標導向提示詞）。換評分器＝換版本字串，分數庫依版本分開存。
+# 用 LLM 判讀（實驗 #6 的 B2 組、同一份目標導向提示詞）。換評分器＝換版本字串，分數庫依版本分開存。
+# 本機 Ollama 模型：回測（tools/alert_backtest.py）與 2026-09-26 以前的線上分數都出自它
 ALERT_LLM_MODEL = "gemma3:27b"
-ALERT_SCORER = f"llm-{ALERT_LLM_MODEL}"
+ALERT_SCORER_LEGACY = f"llm-{ALERT_LLM_MODEL}"
+# 2026-09 起雲端排程沒有 GPU，改用 Google AI Studio 託管的模型（GeminiReviewer；會把標題送到 Google）。
+# 與本機版屬於不同評分器：分數另存、不混算；換用後的一致性見 docs/scorer_switch_gemini.md
+GEMINI_MODEL = "gemma-3-27b-it"
+GEMINI_SYSTEM_INSTRUCTION = True   # 模型不接受 systemInstruction 時改 False（系統提示併入 user turn）
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+GEMINI_RPM = 25                    # 免費層每分鐘上限約 30，留餘裕
+ALERT_SCORER = f"llm-gemini:{GEMINI_MODEL}"   # API 讀取的線上評分器
 # 預警股票池：鏡像 stock-trend-assistant 的 STOCK_POOL（台灣 50，最後核對 2025-07-01，已知過期）。
 # 跨 repo 無法 import 只能複製——以該 repo 為準，變動時兩邊同步。
 ALERT_UNIVERSE: dict[str, str] = {

@@ -145,17 +145,19 @@ class ScoreStore:
         return {date.fromisoformat(r[0]) for r in rows}
 
     # --- 評分 ---
-    def unscored(self, ticker: str, scorer: str) -> list[str]:
+    def unscored(self, ticker: str, scorer: str, since: date | None = None) -> list[str]:
+        """尚未被該評分器評過的標題（依發布時間）。since＝只取該 UTC 日（含）之後發布的——
+        換新評分器時，不設下限會一次把全庫上萬則標題都送去評分。"""
         with self._lock:
             rows = self._conn.execute(
                 """
                 SELECT h.title FROM headlines h
                 LEFT JOIN headline_scores s
                   ON s.ticker = h.ticker AND s.title = h.title AND s.scorer = ?
-                WHERE h.ticker = ? AND s.title IS NULL
+                WHERE h.ticker = ? AND s.title IS NULL AND h.published_at >= ?
                 ORDER BY h.published_at
                 """,
-                (scorer, ticker),
+                (scorer, ticker, since.isoformat() if since else ""),
             ).fetchall()
         return [r[0] for r in rows]
 

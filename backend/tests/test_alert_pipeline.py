@@ -131,6 +131,29 @@ def test_price_reports_are_stored_but_not_sent_to_the_scorer(store):
     assert store.unscored("2330.TW", SCORER) == ["台積電跌40元至2410"]  # 原始標題仍保留在庫裡
 
 
+
+def test_score_since_leaves_older_headlines_unscored(store):
+    # 換新評分器時：已在庫內的舊標題只評 score_since 之後的，不會一次把全庫送去評分
+    client, scorer = FakeClient(), FlakyScorer()
+    record(store, client, scorer, {"2330.TW": "台積電"}, date(2025, 1, 20), date(2025, 1, 22),
+           now=_utc(2025, 3, 1), log=_quiet, score_since=date(2025, 1, 22))
+    assert scorer.seen == ["2330 2025-01-22 標題"]
+    assert store.unscored("2330.TW", SCORER) == ["2330 2025-01-20 標題", "2330 2025-01-21 標題"]
+    assert store.unscored("2330.TW", SCORER, since=date(2025, 1, 21)) == ["2330 2025-01-21 標題"]
+
+
+def test_all_news_is_fetched_before_scoring_starts(store):
+    # 評分額度中途用盡時，全池新聞仍已完整入庫
+    class QuotaScorer(FlakyScorer):
+        def score(self, target, titles):
+            raise RuntimeError("quota")
+
+    client = FakeClient()
+    with pytest.raises(RuntimeError):
+        record(store, client, QuotaScorer(), {"2330.TW": "台積電", "2317.TW": "鴻海"},
+               date(2025, 1, 20), date(2025, 1, 20), now=_utc(2025, 3, 1), log=_quiet)
+    assert store.fetched_days("2317.TW", FINMIND_PROVIDER) == {date(2025, 1, 20)}
+
 # --- 看板 ---
 
 
